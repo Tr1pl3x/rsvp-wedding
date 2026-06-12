@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-cream: #fff8f3;
+  --color-cream-dark: #f0e6db;
+  --color-blush: #fbe8e0;
+  --color-burgundy: #862042;
+  --color-burgundy-dark: #601530;
+  --color-burgundy-light: #a83858;
+  --color-gold: #c49a6c;
+  --color-gold-dark: #a67b4e;
+  --color-gold-light: #d4ad82;
+  --color-rose: #c85a7c;
+  --color-charcoal: #2c1018;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-geist-sans);
+  --font-script: var(--font-great-vibes);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  font-family: var(--font-geist-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes dot-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 173, 130, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(212, 173, 130, 0);
+  }
+}
+
+@keyframes btn-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 16px rgba(196, 154, 108, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(196, 154, 108, 0.55);
+  }
+}
+
+.animate-dot-pulse {
+  animation: dot-pulse 2.4s ease-in-out infinite;
+}
+
+.animate-btn-glow {
+  animation: btn-glow 3s ease-in-out infinite;
 }
