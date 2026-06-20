@@ -107,3 +107,63 @@ export async function saveResponse(
 export async function listGuests(): Promise<Guest[]> {
   return guests;
 }
+
+function slugify(name: string): string {
+  return (
+    name
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 20) || "guest"
+  );
+}
+
+function generateToken(name: string): string {
+  const rand = crypto.randomUUID().replace(/-/g, "").slice(0, 8);
+  let token = `${slugify(name)}-${rand}`;
+  // Extremely unlikely, but guarantee uniqueness against the current list.
+  while (guests.some((guest) => guest.token === token)) {
+    token = `${slugify(name)}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
+  }
+  return token;
+}
+
+export async function createGuest(
+  name: string,
+  maxGuests = 1,
+): Promise<Guest> {
+  const guest: Guest = {
+    id: crypto.randomUUID(),
+    name: name.trim(),
+    token: generateToken(name),
+    maxGuests: Math.max(1, maxGuests),
+    status: "not_sent",
+    response: null,
+    respondedAt: null,
+  };
+  guests.push(guest);
+  return guest;
+}
+
+export async function updateGuest(
+  id: string,
+  patch: Partial<Pick<Guest, "name" | "maxGuests" | "status">>,
+): Promise<Guest | null> {
+  const guest = guests.find((entry) => entry.id === id);
+  if (!guest) return null;
+  if (patch.name !== undefined) guest.name = patch.name.trim();
+  if (patch.maxGuests !== undefined) {
+    guest.maxGuests = Math.max(1, patch.maxGuests);
+  }
+  if (patch.status !== undefined) guest.status = patch.status;
+  return guest;
+}
+
+export async function deleteGuest(id: string): Promise<boolean> {
+  const index = guests.findIndex((entry) => entry.id === id);
+  if (index === -1) return false;
+  guests.splice(index, 1);
+  return true;
+}
