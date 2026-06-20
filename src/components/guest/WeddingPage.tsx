@@ -8,7 +8,6 @@ import DressCodeSection from "./DressCodeSection";
 import EnvelopeEntry, { OPEN_TOTAL, RISE_DELAY, RISE_DUR } from "./EnvelopeEntry";
 import HeroSection from "./HeroSection";
 import LocationSection from "./LocationSection";
-import RsvpModal from "./RsvpModal";
 import ScheduleSection from "./ScheduleSection";
 import TornEdge from "./TornEdge";
 
@@ -20,12 +19,12 @@ const COLORS = {
 
 type WeddingPageProps = {
   guestName: string;
+  token: string;
 };
 
-export default function WeddingPage({ guestName }: WeddingPageProps) {
+export default function WeddingPage({ guestName, token }: WeddingPageProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [showRsvp, setShowRsvp] = useState(false);
   const revealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // The envelope reports when its body has actually slid off-screen — that
@@ -96,10 +95,8 @@ export default function WeddingPage({ guestName }: WeddingPageProps) {
         <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.cream} />
         <DetailsSection />
         <TornEdge topColor={COLORS.cream} bottomColor={COLORS.burgundyDark} />
-        <CtaSection onRsvp={() => setShowRsvp(true)} />
+        <CtaSection token={token} />
       </motion.main>
-
-      <RsvpModal open={showRsvp} onClose={() => setShowRsvp(false)} />
     </>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import Butterfly from "./Butterfly";
 import { FloralDivider } from "./FloralElements";
 import SectionReveal from "./SectionReveal";
 
 type CtaSectionProps = {
-  onRsvp: () => void;
+  token: string;
 };
 
-export default function CtaSection({ onRsvp }: CtaSectionProps) {
+export default function CtaSection({ token }: CtaSectionProps) {
   return (
     <section className="relative overflow-hidden bg-burgundy-dark px-4 py-20 text-cream md:py-28">
       <Butterfly
@@ -35,12 +36,12 @@ export default function CtaSection({ onRsvp }: CtaSectionProps) {
           attendance by 15 September 2026.
         </p>
 
-        <button
-          onClick={onRsvp}
+        <Link
+          href={`/rsvp/${token}/respond`}
           className="animate-btn-glow mt-10 rounded-full bg-cream px-12 py-4 text-xs font-semibold uppercase tracking-[0.25em] text-burgundy-dark transition-all hover:bg-blush active:scale-[0.98]"
         >
           RSVP
-        </button>
+        </Link>
       </SectionReveal>
 
       <SectionReveal delay={0.2} className="mt-16 flex flex-col items-center">

@@ -1,13 +1,22 @@
+import { notFound } from "next/navigation";
 import WeddingPage from "@/components/guest/WeddingPage";
+import { getGuestByToken } from "@/lib/guests";
 
-// Phase 4: look up the guest by token (SSR) and pass real data.
-// Until then this renders the static mockup with placeholder guest data.
+// Force a per-request render: awaiting params alone does NOT opt out of static
+// rendering in Next 16, and we need a fresh guest lookup on every visit.
+export const dynamic = "force-dynamic";
+
 export default async function GuestRsvpPage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
-  await params;
+  const { token } = await params;
+  const guest = await getGuestByToken(token);
+  if (!guest) notFound();
 
-  return <WeddingPage guestName="Isabelle" />;
+  // Greet by first name for warmth; the full name is kept for the admin side.
+  const firstName = guest.name.split(" ")[0];
+
+  return <WeddingPage guestName={firstName} token={token} />;
 }
