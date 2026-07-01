@@ -1,12 +1,9 @@
-type Tally = { label: string; count: number };
-
 type StatsBarProps = {
   total: number;
   responded: number;
   attending: number;
   declined: number;
   pending: number;
-  tallies: Tally[];
 };
 
 function Stat({
@@ -40,7 +37,6 @@ export default function StatsBar({
   attending,
   declined,
   pending,
-  tallies,
 }: StatsBarProps) {
   return (
     <section className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
@@ -49,23 +45,6 @@ export default function StatsBar({
         <Stat value={attending} label="Attending" />
         <Stat value={declined} label="Declined" />
         <Stat value={pending} label="Awaiting" />
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 border-t border-zinc-100 px-5 py-3">
-        <span className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-          Meals
-        </span>
-        {tallies.map((tally) => (
-          <span
-            key={tally.label}
-            className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-xs text-zinc-700"
-          >
-            <span className="font-mono tabular-nums font-semibold text-burgundy">
-              {tally.count}
-            </span>
-            {tally.label}
-          </span>
-        ))}
       </div>
     </section>
   );

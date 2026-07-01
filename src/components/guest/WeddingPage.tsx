@@ -20,9 +20,14 @@ const COLORS = {
 type WeddingPageProps = {
   guestName: string;
   token: string;
+  deadline: string;
 };
 
-export default function WeddingPage({ guestName, token }: WeddingPageProps) {
+export default function WeddingPage({
+  guestName,
+  token,
+  deadline,
+}: WeddingPageProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const revealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,7 +100,7 @@ export default function WeddingPage({ guestName, token }: WeddingPageProps) {
         <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.cream} />
         <DetailsSection />
         <TornEdge topColor={COLORS.cream} bottomColor={COLORS.burgundyDark} />
-        <CtaSection token={token} />
+        <CtaSection token={token} deadline={deadline} />
       </motion.main>
     </>
   );

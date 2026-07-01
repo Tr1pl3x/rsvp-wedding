@@ -11,6 +11,7 @@ export type Guest = {
   status: GuestStatus;
   response: RsvpAnswers | null;
   respondedAt: string | null;
+  createdAt: string;
 };
 
 /**
@@ -30,15 +31,17 @@ const guests: Guest[] = [
     status: "sent",
     response: null,
     respondedAt: null,
+    createdAt: "2026-05-01T10:00:00.000Z",
   },
   {
     id: "g2",
     name: "Marco Vidal",
     token: "marco-vidal",
-    maxGuests: 1,
+    maxGuests: 2,
     status: "sent",
     response: null,
     respondedAt: null,
+    createdAt: "2026-05-03T10:00:00.000Z",
   },
   {
     id: "g3",
@@ -48,15 +51,22 @@ const guests: Guest[] = [
     status: "responded",
     response: { attending: "yes", mealId: "beef", dietary: "No pork", note: "" },
     respondedAt: "2026-06-15T09:30:00.000Z",
+    createdAt: "2026-05-05T10:00:00.000Z",
   },
   {
     id: "g4",
     name: "Théo Laurent",
     token: "theo-laurent",
-    maxGuests: 1,
-    status: "sent",
-    response: null,
-    respondedAt: null,
+    maxGuests: 2,
+    status: "responded",
+    response: {
+      attending: "yes",
+      mealId: "chicken",
+      dietary: "One vegetarian in our party",
+      note: "",
+    },
+    respondedAt: "2026-06-16T14:20:00.000Z",
+    createdAt: "2026-05-08T10:00:00.000Z",
   },
   {
     id: "g5",
@@ -71,6 +81,7 @@ const guests: Guest[] = [
       note: "So sad to miss it — sending you both all my love!",
     },
     respondedAt: "2026-06-14T18:05:00.000Z",
+    createdAt: "2026-05-10T10:00:00.000Z",
   },
   {
     id: "g6",
@@ -80,6 +91,7 @@ const guests: Guest[] = [
     status: "not_sent",
     response: null,
     respondedAt: null,
+    createdAt: "2026-05-12T10:00:00.000Z",
   },
 ];
 
@@ -142,6 +154,7 @@ export async function createGuest(
     status: "not_sent",
     response: null,
     respondedAt: null,
+    createdAt: new Date().toISOString(),
   };
   guests.push(guest);
   return guest;
@@ -158,6 +171,15 @@ export async function updateGuest(
     guest.maxGuests = Math.max(1, patch.maxGuests);
   }
   if (patch.status !== undefined) guest.status = patch.status;
+  return guest;
+}
+
+// Upgrades not_sent -> sent (used when the admin copies the invite message).
+// Never downgrades a guest who has already responded.
+export async function markSent(id: string): Promise<Guest | null> {
+  const guest = guests.find((entry) => entry.id === id);
+  if (!guest) return null;
+  if (guest.status === "not_sent") guest.status = "sent";
   return guest;
 }
 

@@ -11,9 +11,12 @@ import {
 import {
   createGuest,
   deleteGuest,
+  markSent,
   updateGuest,
   type GuestStatus,
 } from "@/lib/guests";
+import { updateSettings } from "@/lib/settings";
+import { isFilter, isSort } from "@/lib/guest-views";
 
 export type LoginState = { error: string } | null;
 
@@ -75,4 +78,31 @@ export async function removeGuest(formData: FormData) {
   if (!id) return;
   await deleteGuest(id);
   revalidatePath("/admin");
+}
+
+// Called when the admin copies a guest's invite message. Upgrades not_sent ->
+// sent (never downgrades a responded guest — see markSent in guests.ts).
+export async function markGuestSent(id: string) {
+  await requireAdmin();
+  if (!id) return;
+  await markSent(id);
+  revalidatePath("/admin");
+}
+
+export async function saveSettings(formData: FormData) {
+  await requireAdmin();
+  const messageTemplate = String(formData.get("messageTemplate") ?? "").trim();
+  const rsvpDeadline = String(formData.get("rsvpDeadline") ?? "").trim();
+  const rawFilter = String(formData.get("defaultFilter") ?? "everyone");
+  const rawSort = String(formData.get("defaultSort") ?? "newest");
+  await updateSettings({
+    messageTemplate,
+    rsvpDeadline,
+    defaultFilter: isFilter(rawFilter) ? rawFilter : "everyone",
+    defaultSort: isSort(rawSort) ? rawSort : "newest",
+  });
+  // Guest pages read the deadline live (force-dynamic), so only the admin
+  // views need revalidating here.
+  revalidatePath("/admin");
+  revalidatePath("/admin/settings");
 }

@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { PencilSimple, QrCode, Trash } from "@phosphor-icons/react";
+import { AnimatePresence } from "framer-motion";
+import {
+  EnvelopeSimple,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
 import { dishById } from "@/components/guest/rsvp/menu";
 import type { Guest, GuestStatus } from "@/lib/guests";
 import { editGuest, removeGuest } from "@/lib/admin-actions";
-import CopyLinkButton from "./CopyLinkButton";
+import InviteMessageModal from "./InviteMessageModal";
 import SubmitButton from "./SubmitButton";
 
 const STATUS_STYLE: Record<GuestStatus, { dot: string; label: string }> = {
@@ -20,6 +25,14 @@ function StatusPill({ status }: { status: GuestStatus }) {
     <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-zinc-700">
       <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
       {style.label}
+    </span>
+  );
+}
+
+function SeatBadge({ seats }: { seats: number }) {
+  return (
+    <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-500">
+      {seats} {seats === 1 ? "seat" : "seats"}
     </span>
   );
 }
@@ -40,31 +53,20 @@ function Attending({ guest }: { guest: Guest }) {
   return <span className="text-zinc-300">—</span>;
 }
 
-function InviteActions({ token }: { token: string }) {
+function InviteButton({ onOpen }: { onOpen: () => void }) {
   return (
-    <div className="flex items-center gap-1.5">
-      <CopyLinkButton token={token} />
-      <a
-        href={`/admin/qr/${token}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Open QR code"
-        className="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
-      >
-        <QrCode size={13} aria-hidden />
-        QR
-      </a>
-    </div>
+    <button
+      type="button"
+      onClick={onOpen}
+      className="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
+    >
+      <EnvelopeSimple size={13} aria-hidden />
+      Invite
+    </button>
   );
 }
 
-function RowActions({
-  guest,
-  onEdit,
-}: {
-  guest: Guest;
-  onEdit: () => void;
-}) {
+function RowActions({ guest, onEdit }: { guest: Guest; onEdit: () => void }) {
   return (
     <div className="flex items-center gap-1">
       <button
@@ -106,10 +108,7 @@ function EditForm({ guest, onDone }: { guest: Guest; onDone: () => void }) {
     >
       <input type="hidden" name="id" value={guest.id} />
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor={`edit-name-${guest.id}`}
-          className="text-xs text-zinc-500"
-        >
+        <label htmlFor={`edit-name-${guest.id}`} className="text-xs text-zinc-500">
           Name
         </label>
         <input
@@ -121,10 +120,7 @@ function EditForm({ guest, onDone }: { guest: Guest; onDone: () => void }) {
         />
       </div>
       <div className="flex w-20 flex-col gap-1">
-        <label
-          htmlFor={`edit-seats-${guest.id}`}
-          className="text-xs text-zinc-500"
-        >
+        <label htmlFor={`edit-seats-${guest.id}`} className="text-xs text-zinc-500">
           Seats
         </label>
         <input
@@ -137,10 +133,7 @@ function EditForm({ guest, onDone }: { guest: Guest; onDone: () => void }) {
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor={`edit-status-${guest.id}`}
-          className="text-xs text-zinc-500"
-        >
+        <label htmlFor={`edit-status-${guest.id}`} className="text-xs text-zinc-500">
           Status
         </label>
         <select
@@ -171,16 +164,34 @@ function EditForm({ guest, onDone }: { guest: Guest; onDone: () => void }) {
   );
 }
 
-export default function GuestTable({ guests }: { guests: Guest[] }) {
+type GuestTableProps = {
+  guests: Guest[];
+  totalGuests: number;
+  messageTemplate: string;
+  deadline: string;
+};
+
+export default function GuestTable({
+  guests,
+  totalGuests,
+  messageTemplate,
+  deadline,
+}: GuestTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [messageGuest, setMessageGuest] = useState<Guest | null>(null);
   const close = () => setEditingId(null);
 
   if (guests.length === 0) {
+    const listIsEmpty = totalGuests === 0;
     return (
       <div className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-16 text-center">
-        <p className="text-sm font-medium text-zinc-700">No guests yet</p>
+        <p className="text-sm font-medium text-zinc-700">
+          {listIsEmpty ? "No guests yet" : "No guests match"}
+        </p>
         <p className="mt-1 text-sm text-zinc-500">
-          Add your first guest above to generate their invite link.
+          {listIsEmpty
+            ? "Add your first guest above to generate their invite."
+            : "Try a different filter or search, or add a guest above."}
         </p>
       </div>
     );
@@ -190,7 +201,7 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
     <>
       {/* Desktop: table */}
       <div className="hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-white sm:block">
-        <table className="w-full min-w-[820px] border-collapse text-left">
+        <table className="w-full min-w-[840px] border-collapse text-left">
           <thead>
             <tr className="border-b border-zinc-200 text-xs font-medium uppercase tracking-wide text-zinc-400">
               <th className="px-4 py-3">Guest</th>
@@ -220,7 +231,10 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
               return (
                 <tr key={guest.id} className="align-top hover:bg-zinc-50/60">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-zinc-900">{guest.name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-zinc-900">{guest.name}</p>
+                      <SeatBadge seats={guest.maxGuests} />
+                    </div>
                     <p className="font-mono text-xs text-zinc-400">
                       {guest.token}
                     </p>
@@ -249,7 +263,7 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <InviteActions token={guest.token} />
+                    <InviteButton onOpen={() => setMessageGuest(guest)} />
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end">
@@ -283,7 +297,10 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
                 <>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="font-medium text-zinc-900">{guest.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-zinc-900">{guest.name}</p>
+                        <SeatBadge seats={guest.maxGuests} />
+                      </div>
                       <p className="truncate font-mono text-xs text-zinc-400">
                         {guest.token}
                       </p>
@@ -300,16 +317,21 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
                       Attending: <Attending guest={guest} />
                     </span>
                     {dish && (
-                      <span className="text-zinc-700">{dish.label}</span>
+                      <span className="text-zinc-700">
+                        <span className="text-zinc-400">Meal choice:</span>{" "}
+                        {dish.label}
+                      </span>
                     )}
                   </div>
 
                   {notes && (
-                    <p className="mt-2 text-sm text-zinc-600">{notes}</p>
+                    <p className="mt-2 text-sm text-zinc-600">
+                      <span className="text-zinc-400">Note:</span> {notes}
+                    </p>
                   )}
 
                   <div className="mt-3">
-                    <InviteActions token={guest.token} />
+                    <InviteButton onOpen={() => setMessageGuest(guest)} />
                   </div>
                 </>
               )}
@@ -317,6 +339,18 @@ export default function GuestTable({ guests }: { guests: Guest[] }) {
           );
         })}
       </div>
+
+      <AnimatePresence>
+        {messageGuest && (
+          <InviteMessageModal
+            key={messageGuest.id}
+            guest={messageGuest}
+            template={messageTemplate}
+            deadline={deadline}
+            onClose={() => setMessageGuest(null)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

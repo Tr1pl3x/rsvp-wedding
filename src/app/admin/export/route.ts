@@ -20,6 +20,7 @@ export async function GET() {
   const rows: string[][] = [
     [
       "Name",
+      "Seats",
       "Token",
       "Status",
       "Attending",
@@ -33,6 +34,7 @@ export async function GET() {
   for (const guest of guests) {
     rows.push([
       guest.name,
+      String(guest.maxGuests),
       guest.token,
       guest.status,
       guest.response?.attending ?? "",

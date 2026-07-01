@@ -11,6 +11,7 @@ import type { RsvpAnswers } from "./types";
 type RsvpExperienceProps = {
   guestName: string;
   token: string;
+  deadline: string;
   /** Set when the guest has already responded — start on the confirmation. */
   initialAnswers?: RsvpAnswers | null;
 };
@@ -18,6 +19,7 @@ type RsvpExperienceProps = {
 export default function RsvpExperience({
   guestName,
   token,
+  deadline,
   initialAnswers = null,
 }: RsvpExperienceProps) {
   const [answers, setAnswers] = useState<RsvpAnswers | null>(initialAnswers);
@@ -79,6 +81,7 @@ export default function RsvpExperience({
             <RsvpForm
               guestName={guestName}
               token={token}
+              deadline={deadline}
               onSubmit={handleSubmit}
               pending={isPending}
               submitError={saveError}

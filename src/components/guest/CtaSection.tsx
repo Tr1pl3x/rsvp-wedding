@@ -7,9 +7,10 @@ import SectionReveal from "./SectionReveal";
 
 type CtaSectionProps = {
   token: string;
+  deadline: string;
 };
 
-export default function CtaSection({ token }: CtaSectionProps) {
+export default function CtaSection({ token, deadline }: CtaSectionProps) {
   return (
     <section className="relative overflow-hidden bg-burgundy-dark px-4 py-20 text-cream md:py-28">
       <Butterfly
@@ -33,7 +34,7 @@ export default function CtaSection({ token }: CtaSectionProps) {
         </h2>
         <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream/75">
           To help us prepare for a joyful celebration, kindly confirm your
-          attendance by 15 September 2026.
+          attendance by {deadline}.
         </p>
 
         <Link

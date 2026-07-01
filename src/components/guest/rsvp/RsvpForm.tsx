@@ -18,6 +18,7 @@ const ATTENDING_OPTIONS: { value: Attending; label: string }[] = [
 type RsvpFormProps = {
   guestName: string;
   token: string;
+  deadline: string;
   onSubmit: (answers: RsvpAnswers) => void;
   /** True while the Server Action is saving. */
   pending?: boolean;
@@ -28,6 +29,7 @@ type RsvpFormProps = {
 export default function RsvpForm({
   guestName,
   token,
+  deadline,
   onSubmit,
   pending = false,
   submitError = null,
@@ -83,7 +85,7 @@ export default function RsvpForm({
           </p>
         )}
         <p className="mt-2 text-xs uppercase tracking-[0.2em] text-charcoal/65">
-          Please RSVP before 15 September 2026
+          Please RSVP before {deadline}
         </p>
       </SectionReveal>
 
