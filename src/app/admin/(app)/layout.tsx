@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin-session";
+import { getAppEnv } from "@/lib/app-env";
 import LogoutButton from "@/components/admin/LogoutButton";
 import RefreshButton from "@/components/admin/RefreshButton";
 import SettingsLink from "@/components/admin/SettingsLink";
@@ -14,6 +15,11 @@ export default async function AdminAppLayout({
   // The real gate. Re-checked inside every admin Server Action / Route Handler.
   await requireAdmin();
 
+  // At-a-glance guard against editing the wrong guest list: amber DEV on the
+  // playground (preview/local), burgundy PROD on the real thing.
+  const env = getAppEnv();
+  const isProd = env === "production";
+
   return (
     <div className="min-h-[100dvh] bg-zinc-50 text-zinc-900">
       <header className="border-b border-zinc-200 bg-white">
@@ -24,6 +30,16 @@ export default async function AdminAppLayout({
             </span>
             <span className="text-sm font-medium tracking-tight text-zinc-400">
               Guest Admin
+            </span>
+            <span
+              title={`Environment: ${env}`}
+              className={`ml-1 self-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                isProd
+                  ? "bg-burgundy text-white"
+                  : "bg-amber-100 text-amber-700 ring-1 ring-amber-300"
+              }`}
+            >
+              {isProd ? "Prod" : "Dev"}
             </span>
           </Link>
           <div className="flex items-center gap-2">
