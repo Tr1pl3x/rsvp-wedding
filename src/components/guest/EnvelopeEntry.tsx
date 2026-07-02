@@ -312,7 +312,7 @@ export default function EnvelopeEntry({
           {/* Long guest names scale down only as far as needed to fit the
               SCREEN (single line, ~0.46em avg glyph width in Great Vibes). */}
           <motion.p
-            className="font-script absolute inset-x-0 top-[27%] whitespace-nowrap px-4 text-center text-4xl text-burgundy md:text-5xl"
+            className="font-script absolute inset-x-0 top-[28.5%] whitespace-nowrap px-4 text-center text-4xl text-burgundy md:text-5xl"
             style={{
               textShadow: HALO,
               ...(greeting.length > 17
