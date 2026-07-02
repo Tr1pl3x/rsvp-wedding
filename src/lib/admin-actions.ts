@@ -50,7 +50,7 @@ export async function logout() {
 // so the layout gate alone is not sufficient.
 export async function addGuest(formData: FormData) {
   await requireAdmin();
-  const name = String(formData.get("name") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim().slice(0, 200);
   if (!name) return;
   const maxGuests = Number(formData.get("maxGuests") ?? 1) || 1;
   await createGuest(name, maxGuests);
@@ -60,7 +60,7 @@ export async function addGuest(formData: FormData) {
 export async function editGuest(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
-  const name = String(formData.get("name") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim().slice(0, 200);
   const maxGuests = Number(formData.get("maxGuests") ?? 1) || 1;
   const raw = String(formData.get("status") ?? "sent");
   const allowed: GuestStatus[] = ["not_sent", "sent", "responded"];
@@ -91,8 +91,12 @@ export async function markGuestSent(id: string) {
 
 export async function saveSettings(formData: FormData) {
   await requireAdmin();
-  const messageTemplate = String(formData.get("messageTemplate") ?? "").trim();
-  const rsvpDeadline = String(formData.get("rsvpDeadline") ?? "").trim();
+  const messageTemplate = String(formData.get("messageTemplate") ?? "")
+    .trim()
+    .slice(0, 5000);
+  const rsvpDeadline = String(formData.get("rsvpDeadline") ?? "")
+    .trim()
+    .slice(0, 200);
   const rawFilter = String(formData.get("defaultFilter") ?? "everyone");
   const rawSort = String(formData.get("defaultSort") ?? "newest");
   await updateSettings({

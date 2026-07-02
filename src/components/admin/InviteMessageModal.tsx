@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy } from "@phosphor-icons/react";
-import { renderTemplate } from "@/lib/settings";
+import { renderTemplate } from "@/lib/template";
 import { markGuestSent } from "@/lib/admin-actions";
 import { WEDDING } from "@/lib/wedding";
 import type { Guest } from "@/lib/guests";

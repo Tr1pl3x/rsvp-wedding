@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { ArrowCounterClockwise } from "@phosphor-icons/react";
 import { saveSettings } from "@/lib/admin-actions";
-import { DEFAULT_MESSAGE_TEMPLATE, type AppSettings } from "@/lib/settings";
+import { DEFAULT_MESSAGE_TEMPLATE } from "@/lib/template";
+import type { AppSettings } from "@/lib/settings";
 import { FILTERS, SORTS } from "@/lib/guest-views";
 import SubmitButton from "./SubmitButton";
 

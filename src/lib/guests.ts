@@ -1,8 +1,14 @@
+import "server-only";
 import { cache } from "react";
+import { prisma } from "@/lib/prisma";
+import type { Guest as GuestRow } from "@/generated/prisma/client";
 import type { RsvpAnswers } from "@/components/guest/rsvp/types";
 
 export type GuestStatus = "not_sent" | "sent" | "responded";
 
+// The app-facing shape is unchanged from the mock era: dates are ISO STRINGS
+// (client code string-sorts and slices them) and the response is a composed
+// RsvpAnswers object. All Prisma specifics stay inside this module.
 export type Guest = {
   id: string;
   name: string;
@@ -14,93 +20,42 @@ export type Guest = {
   createdAt: string;
 };
 
-/**
- * MOCK STORE — a module-level in-memory list standing in for the database.
- *
- * It resets on server restart and is not shared across serverless instances,
- * which is fine for building/testing. The Neon + Prisma swap happens entirely
- * inside this file: the functions below keep the same signatures, so nothing
- * that imports them has to change.
- */
-const guests: Guest[] = [
-  {
-    id: "g1",
-    name: "Isabelle",
-    token: "test-token",
-    maxGuests: 1,
-    status: "sent",
-    response: null,
-    respondedAt: null,
-    createdAt: "2026-05-01T10:00:00.000Z",
-  },
-  {
-    id: "g2",
-    name: "Marco Vidal",
-    token: "marco-vidal",
-    maxGuests: 2,
-    status: "sent",
-    response: null,
-    respondedAt: null,
-    createdAt: "2026-05-03T10:00:00.000Z",
-  },
-  {
-    id: "g3",
-    name: "Priya Anand",
-    token: "priya-anand",
-    maxGuests: 1,
-    status: "responded",
-    response: { attending: "yes", mealId: "beef", dietary: "No pork", note: "" },
-    respondedAt: "2026-06-15T09:30:00.000Z",
-    createdAt: "2026-05-05T10:00:00.000Z",
-  },
-  {
-    id: "g4",
-    name: "Théo Laurent",
-    token: "theo-laurent",
-    maxGuests: 2,
-    status: "responded",
-    response: {
-      attending: "yes",
-      mealId: "chicken",
-      dietary: "One vegetarian in our party",
-      note: "",
-    },
-    respondedAt: "2026-06-16T14:20:00.000Z",
-    createdAt: "2026-05-08T10:00:00.000Z",
-  },
-  {
-    id: "g5",
-    name: "Amara Okafor",
-    token: "amara-okafor",
-    maxGuests: 1,
-    status: "responded",
-    response: {
-      attending: "no",
-      mealId: null,
-      dietary: "",
-      note: "So sad to miss it — sending you both all my love!",
-    },
-    respondedAt: "2026-06-14T18:05:00.000Z",
-    createdAt: "2026-05-10T10:00:00.000Z",
-  },
-  {
-    id: "g6",
-    name: "Kenji Watanabe",
-    token: "kenji-watanabe",
-    maxGuests: 1,
-    status: "not_sent",
-    response: null,
-    respondedAt: null,
-    createdAt: "2026-05-12T10:00:00.000Z",
-  },
-];
+function toGuest(row: GuestRow): Guest {
+  return {
+    id: row.id,
+    name: row.name,
+    token: row.token,
+    maxGuests: row.maxGuests,
+    status: row.status,
+    response:
+      row.attending === null
+        ? null
+        : {
+            attending: row.attending,
+            mealId: row.mealId,
+            dietary: row.dietary,
+            note: row.note,
+          },
+    respondedAt: row.respondedAt ? row.respondedAt.toISOString() : null,
+    createdAt: row.createdAt.toISOString(),
+  };
+}
 
-// cache() dedupes the lookup within a single request (page render + any
-// return-visit branch). It does NOT persist across requests, so with
-// force-dynamic each visit reads the live store.
+// Expected failures are expressed as null/false returns (never throws) — the
+// actions layer depends on that contract.
+function prismaErrorCode(error: unknown): string | undefined {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    return String((error as { code: unknown }).code);
+  }
+  return undefined;
+}
+
+// cache() dedupes the lookup within a single request. All consuming pages are
+// force-dynamic, so every visit still reads fresh rows.
 export const getGuestByToken = cache(
   async (token: string): Promise<Guest | null> => {
-    return guests.find((guest) => guest.token === token) ?? null;
+    const row = await prisma.guest.findUnique({ where: { token } });
+    return row ? toGuest(row) : null;
   },
 );
 
@@ -108,16 +63,28 @@ export async function saveResponse(
   token: string,
   answers: RsvpAnswers,
 ): Promise<Guest | null> {
-  const guest = guests.find((entry) => entry.token === token);
-  if (!guest) return null;
-  guest.response = answers;
-  guest.status = "responded";
-  guest.respondedAt = new Date().toISOString();
-  return guest;
+  try {
+    const row = await prisma.guest.update({
+      where: { token },
+      data: {
+        attending: answers.attending,
+        mealId: answers.mealId,
+        dietary: answers.dietary,
+        note: answers.note,
+        status: "responded",
+        respondedAt: new Date(),
+      },
+    });
+    return toGuest(row);
+  } catch (error) {
+    if (prismaErrorCode(error) === "P2025") return null; // unknown token
+    throw error;
+  }
 }
 
 export async function listGuests(): Promise<Guest[]> {
-  return guests;
+  const rows = await prisma.guest.findMany({ orderBy: { createdAt: "asc" } });
+  return rows.map(toGuest);
 }
 
 function slugify(name: string): string {
@@ -132,60 +99,75 @@ function slugify(name: string): string {
   );
 }
 
-function generateToken(name: string): string {
+function randomToken(name: string): string {
   const rand = crypto.randomUUID().replace(/-/g, "").slice(0, 8);
-  let token = `${slugify(name)}-${rand}`;
-  // Extremely unlikely, but guarantee uniqueness against the current list.
-  while (guests.some((guest) => guest.token === token)) {
-    token = `${slugify(name)}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
-  }
-  return token;
+  return `${slugify(name)}-${rand}`;
+}
+
+// Bounded both ends: the venue caps at 100, and an unbounded value would
+// overflow the INT4 column and throw instead of clamping.
+function clampSeats(value: number): number {
+  return Math.min(99, Math.max(1, Math.floor(Number.isFinite(value) ? value : 1)));
 }
 
 export async function createGuest(
   name: string,
   maxGuests = 1,
 ): Promise<Guest> {
-  const guest: Guest = {
-    id: crypto.randomUUID(),
+  const data = {
     name: name.trim(),
-    token: generateToken(name),
-    maxGuests: Math.max(1, maxGuests),
-    status: "not_sent",
-    response: null,
-    respondedAt: null,
-    createdAt: new Date().toISOString(),
+    maxGuests: clampSeats(maxGuests),
+    status: "not_sent" as const,
   };
-  guests.push(guest);
-  return guest;
+  // Token uniqueness is enforced by the DB constraint; retry on collision.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const row = await prisma.guest.create({
+        data: { ...data, id: crypto.randomUUID(), token: randomToken(name) },
+      });
+      return toGuest(row);
+    } catch (error) {
+      if (prismaErrorCode(error) === "P2002" && attempt < 5) continue;
+      throw error;
+    }
+  }
 }
 
 export async function updateGuest(
   id: string,
   patch: Partial<Pick<Guest, "name" | "maxGuests" | "status">>,
 ): Promise<Guest | null> {
-  const guest = guests.find((entry) => entry.id === id);
-  if (!guest) return null;
-  if (patch.name !== undefined) guest.name = patch.name.trim();
-  if (patch.maxGuests !== undefined) {
-    guest.maxGuests = Math.max(1, patch.maxGuests);
+  try {
+    const row = await prisma.guest.update({
+      where: { id },
+      data: {
+        name: patch.name !== undefined ? patch.name.trim() : undefined,
+        maxGuests:
+          patch.maxGuests !== undefined
+            ? clampSeats(patch.maxGuests)
+            : undefined,
+        status: patch.status,
+      },
+    });
+    return toGuest(row);
+  } catch (error) {
+    if (prismaErrorCode(error) === "P2025") return null;
+    throw error;
   }
-  if (patch.status !== undefined) guest.status = patch.status;
-  return guest;
 }
 
 // Upgrades not_sent -> sent (used when the admin copies the invite message).
 // Never downgrades a guest who has already responded.
 export async function markSent(id: string): Promise<Guest | null> {
-  const guest = guests.find((entry) => entry.id === id);
-  if (!guest) return null;
-  if (guest.status === "not_sent") guest.status = "sent";
-  return guest;
+  await prisma.guest.updateMany({
+    where: { id, status: "not_sent" },
+    data: { status: "sent" },
+  });
+  const row = await prisma.guest.findUnique({ where: { id } });
+  return row ? toGuest(row) : null;
 }
 
 export async function deleteGuest(id: string): Promise<boolean> {
-  const index = guests.findIndex((entry) => entry.id === id);
-  if (index === -1) return false;
-  guests.splice(index, 1);
-  return true;
+  const result = await prisma.guest.deleteMany({ where: { id } });
+  return result.count > 0;
 }

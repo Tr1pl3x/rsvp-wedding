@@ -1,5 +1,8 @@
+import "server-only";
 import { cache } from "react";
-import type { GuestFilter, GuestSort } from "@/lib/guest-views";
+import { prisma } from "@/lib/prisma";
+import { DEFAULT_MESSAGE_TEMPLATE } from "@/lib/template";
+import { isFilter, isSort, type GuestFilter, type GuestSort } from "@/lib/guest-views";
 
 export type AppSettings = {
   messageTemplate: string;
@@ -8,36 +11,37 @@ export type AppSettings = {
   defaultSort: GuestSort;
 };
 
-export const DEFAULT_MESSAGE_TEMPLATE =
-  "Hi {name}, you're warmly invited to Harry & Susan's wedding on {date} at {venue}. Please RSVP by {deadline}: {link}";
-
-// MOCK STORE — module-level, same swap-for-DB pattern as guests.ts.
-let settings: AppSettings = {
+const DEFAULTS: AppSettings = {
   messageTemplate: DEFAULT_MESSAGE_TEMPLATE,
   rsvpDeadline: "15 September 2026",
   defaultFilter: "everyone",
   defaultSort: "newest",
 };
 
+// Single-row table (id = 1). Filter/sort are sanitized on READ as well as
+// write, so a legacy/corrupt row can never crash the admin view.
 export const getSettings = cache(async (): Promise<AppSettings> => {
-  return settings;
+  const row = await prisma.settings.findUnique({ where: { id: 1 } });
+  if (!row) return DEFAULTS;
+  return {
+    messageTemplate: row.messageTemplate,
+    rsvpDeadline: row.rsvpDeadline,
+    defaultFilter: isFilter(row.defaultFilter) ? row.defaultFilter : "everyone",
+    defaultSort: isSort(row.defaultSort) ? row.defaultSort : "newest",
+  };
 });
 
 export async function updateSettings(
   patch: Partial<AppSettings>,
 ): Promise<AppSettings> {
-  settings = { ...settings, ...patch };
-  return settings;
-}
-
-/** Fill {name} {link} {date} {venue} {deadline} in a template. */
-export function renderTemplate(
-  template: string,
-  values: Record<string, string>,
-): string {
-  // Object.hasOwn (not `in`) so template placeholders like {toString} or
-  // {constructor} are left literal instead of resolving to prototype members.
-  return template.replace(/\{(\w+)\}/g, (match, key) =>
-    Object.hasOwn(values, key) ? values[key] : match,
-  );
+  // Shallow merge over the current values (same semantics as the old mock);
+  // empty strings are persisted deliberately — no falsy filtering.
+  const current = await getSettings();
+  const merged = { ...current, ...patch };
+  await prisma.settings.upsert({
+    where: { id: 1 },
+    create: { id: 1, ...merged },
+    update: merged,
+  });
+  return merged;
 }

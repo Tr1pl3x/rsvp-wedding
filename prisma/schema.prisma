@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GuestStatus {
+  not_sent
+  sent
+  responded
+}
+
+enum Attending {
+  yes
+  no
+}
+
+model Guest {
+  id          String      @id
+  name        String
+  token       String      @unique
+  maxGuests   Int
+  status      GuestStatus @default(not_sent)
+  // Response fields — flattened columns (queryable, CSV-safe). attending null
+  // means "no response recorded"; the data layer composes RsvpAnswers from it.
+  attending   Attending?
+  mealId      String?
+  dietary     String      @default("")
+  note        String      @default("")
+  respondedAt DateTime?
+  createdAt   DateTime    @default(now())
+}
+
+// Single-row table (id fixed at 1) — the editable app settings.
+model Settings {
+  id              Int    @id @default(1)
+  messageTemplate String
+  rsvpDeadline    String
+  defaultFilter   String
+  defaultSort     String
+}
