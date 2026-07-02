@@ -122,6 +122,8 @@ export default function EnvelopeEntry({
   onOpen,
   onDropComplete,
 }: EnvelopeEntryProps) {
+  const greeting = `Hi ${guestName},`;
+
   return (
     <>
       {/* Envelope interior — sits BEHIND the page (z-51 vs the page's z-52),
@@ -303,15 +305,24 @@ export default function EnvelopeEntry({
           {/* Both lines sit high on the flap where the triangle is wide. The
               invite line's size is clamped to viewport width so it always
               clears the flap's fold borders on narrow phones. */}
+          {/* Long guest names scale down so the greeting stays inside the
+              flap triangle (~0.46em avg glyph width in Great Vibes; the
+              flap offers roughly 151vw/chars at this height). Short names
+              keep the standard size via the Tailwind classes. */}
           <motion.p
-            className="font-script absolute inset-x-0 top-[10%] px-6 text-center text-4xl text-burgundy md:text-5xl"
+            className="font-script absolute inset-x-0 top-[10%] whitespace-nowrap px-6 text-center text-4xl text-burgundy md:text-5xl"
+            style={
+              greeting.length > 14
+                ? { fontSize: `min(2.25rem, ${(151 / greeting.length).toFixed(1)}vw)` }
+                : undefined
+            }
             initial={{ opacity: 0 }}
             animate={{ opacity: isOpen ? 0 : 1 }}
             transition={
               isOpen ? { duration: 0.25 } : { delay: 0.4, duration: 0.8 }
             }
           >
-            Hi {guestName},
+            {greeting}
           </motion.p>
 
           <motion.p

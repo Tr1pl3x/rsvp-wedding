@@ -19,12 +19,10 @@ export default async function GuestRsvpPage({
   ]);
   if (!guest) notFound();
 
-  // Greet by first name for warmth; the full name is kept for the admin side.
-  const firstName = guest.name.split(" ")[0];
-
+  // The invite greets with the guest's name exactly as entered in the admin.
   return (
     <WeddingPage
-      guestName={firstName}
+      guestName={guest.name}
       token={token}
       deadline={settings.rsvpDeadline}
     />

@@ -19,12 +19,10 @@ export default async function RespondPage({
   ]);
   if (!guest) notFound();
 
-  const firstName = guest.name.split(" ")[0];
-
   return (
     <RsvpExperience
       token={token}
-      guestName={firstName}
+      guestName={guest.name}
       initialAnswers={guest.response}
       deadline={settings.rsvpDeadline}
     />
