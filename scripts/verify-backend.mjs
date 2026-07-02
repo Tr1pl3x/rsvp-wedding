@@ -37,15 +37,15 @@ await page.goto(`${base}/rsvp/priya-anand/respond`, { waitUntil: "networkidle" }
 await page.waitForTimeout(700);
 await page.screenshot({ path: `${OUT}/4-seeded-priya.png` });
 
-// 5. Decline flow for another token (Théo)
-await page.goto(`${base}/rsvp/theo-laurent/respond`, { waitUntil: "networkidle" });
+// 5. Decline flow for another token (Kenji — seeded unresponded)
+await page.goto(`${base}/rsvp/kenji-watanabe/respond`, { waitUntil: "networkidle" });
 await page.waitForTimeout(500);
-await page.screenshot({ path: `${OUT}/5a-form-theo.png` });
+await page.screenshot({ path: `${OUT}/5a-form-kenji.png` });
 await page.getByText("Unfortunately, I can't come").click();
 await page.getByLabel(/A note to the couple/).fill("Congratulations to you both!");
 await page.getByRole("button", { name: /Submit RSVP/ }).click();
 await page.waitForTimeout(1200);
-await page.screenshot({ path: `${OUT}/5b-confirm-theo.png` });
+await page.screenshot({ path: `${OUT}/5b-confirm-kenji.png` });
 
 // 6. Invalid token -> not-found page
 await page.goto(`${base}/rsvp/no-such-token-xyz/respond`, { waitUntil: "networkidle" });

@@ -39,12 +39,7 @@ await page.getByRole("button", { name: "Add guest" }).click();
 await page.waitForTimeout(1200);
 await page.screenshot({ path: `${OUT}/4-after-add.png`, fullPage: true });
 
-// 5. QR endpoint renders a PNG
-await page.goto(`${base}/admin/qr/priya-anand`, { waitUntil: "networkidle" });
-await page.waitForTimeout(400);
-await page.screenshot({ path: `${OUT}/5-qr.png` });
-
-// 6. CSV export
+// 5. CSV export
 const csv = await page.evaluate(async (b) => {
   const r = await fetch(`${b}/admin/export`);
   return {

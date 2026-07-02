@@ -21,9 +21,11 @@ await page.waitForURL(`${base}/admin`, { timeout: 6000 }).catch(() => {});
 await page.waitForTimeout(1000);
 await page.screenshot({ path: `${OUT}/1-dashboard.png`, fullPage: true });
 
-// add guest -> should appear on top (Newest default sort)
-await page.fill('input[name="name"]', "Wendell Okonkwo");
-await page.getByRole("button", { name: "Add guest" }).click();
+// add guest (via the modal) -> should appear on top (Newest default sort)
+await page.getByRole("button", { name: "Add guest" }).first().click();
+const dialog = page.getByRole("dialog");
+await dialog.locator('input[name="name"]').fill("Wendell Okonkwo");
+await dialog.getByRole("button", { name: /Add guest|Adding/ }).click();
 await page.waitForTimeout(1300);
 await page.screenshot({ path: `${OUT}/2-after-add-newest.png`, fullPage: true });
 
