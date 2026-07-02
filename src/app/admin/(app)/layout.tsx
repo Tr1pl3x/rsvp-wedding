@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin-session";
 import LogoutButton from "@/components/admin/LogoutButton";
+import RefreshButton from "@/components/admin/RefreshButton";
 import SettingsLink from "@/components/admin/SettingsLink";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export default async function AdminAppLayout({
             </span>
           </Link>
           <div className="flex items-center gap-2">
+            <RefreshButton />
             <SettingsLink />
             <LogoutButton />
           </div>
