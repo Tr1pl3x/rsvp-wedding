@@ -56,7 +56,6 @@ export default function RsvpConfirmation({
         ref={headingRef}
         tabIndex={-1}
         className="font-script mt-4 text-5xl text-burgundy outline-none"
-        style={{ wordSpacing: "0.35em" }}
       >
         Thank You{guestName ? `, ${guestName}` : ""}!
       </h1>
