@@ -311,11 +311,14 @@ export default function EnvelopeEntry({
               keep the standard size via the Tailwind classes. */}
           <motion.p
             className="font-script absolute inset-x-0 top-[10%] whitespace-nowrap px-6 text-center text-4xl text-burgundy md:text-5xl"
-            style={
-              greeting.length > 14
-                ? { fontSize: `min(2.25rem, ${(151 / greeting.length).toFixed(1)}vw)` }
-                : undefined
-            }
+            style={{
+              // Great Vibes' space glyph is so narrow that capital swashes
+              // (e.g. W) swallow it — full names read as one word without this
+              wordSpacing: "0.35em",
+              ...(greeting.length > 14
+                ? { fontSize: `min(2.25rem, ${(140 / greeting.length).toFixed(1)}vw)` }
+                : undefined),
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isOpen ? 0 : 1 }}
             transition={
