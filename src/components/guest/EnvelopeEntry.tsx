@@ -329,7 +329,7 @@ export default function EnvelopeEntry({
           </motion.p>
 
           <motion.p
-            className="font-script absolute inset-x-0 top-[36%] px-4 text-center text-[clamp(1rem,4.7vw,1.875rem)] text-burgundy/80"
+            className="font-script absolute inset-x-0 top-[34%] px-4 text-center text-[clamp(1rem,4.7vw,1.875rem)] text-burgundy/80"
             style={{ textShadow: HALO }}
             initial={{ clipPath: "inset(0 100% 0 0)", opacity: 1 }}
             animate={
