@@ -27,6 +27,11 @@ export const OPEN_TOTAL = DROP_DELAY + DROP_DUR;
 const OUTER_PAPER = "#f5dde0";
 const INNER_PAPER = "#e8c5c9";
 
+// Paper-coloured glow behind the entry text so it stays legible where it
+// crosses the flap's fold edges and their drop shadows.
+const HALO =
+  "0 1px 2px rgba(255,248,243,0.9), 0 0 8px rgba(245,221,224,0.95), 0 0 18px rgba(245,221,224,0.9)";
+
 // Top flap silhouette and the pocket (everything except the top triangle)
 const FLAP_CLIP = "polygon(0% 0%, 100% 0%, 50% 50%)";
 const POCKET_CLIP = "polygon(0% 0%, 50% 50%, 100% 0%, 100% 100%, 0% 100%)";
@@ -300,24 +305,19 @@ export default function EnvelopeEntry({
           transition={{ duration: 0.4 }}
         />
 
-        {/* Entry text */}
+        {/* Entry text — nestles just above the seal. The lines may cross the
+            flap's fold edges by design; a paper-coloured halo keeps the
+            script legible where they do. */}
         <div className="pointer-events-none absolute inset-0 z-[3]">
-          {/* Both lines sit high on the flap where the triangle is wide. The
-              invite line's size is clamped to viewport width so it always
-              clears the flap's fold borders on narrow phones. */}
-          {/* Long guest names scale down so the greeting stays inside the
-              flap triangle (~0.46em avg glyph width in Great Vibes; the
-              flap offers roughly 151vw/chars at this height). Short names
-              keep the standard size via the Tailwind classes. */}
+          {/* Long guest names scale down only as far as needed to fit the
+              SCREEN (single line, ~0.46em avg glyph width in Great Vibes). */}
           <motion.p
-            className="font-script absolute inset-x-0 top-[10%] whitespace-nowrap px-6 text-center text-4xl text-burgundy md:text-5xl"
+            className="font-script absolute inset-x-0 top-[27%] whitespace-nowrap px-4 text-center text-4xl text-burgundy md:text-5xl"
             style={{
-              // Great Vibes' space glyph is so narrow that capital swashes
-              // (e.g. W) swallow it — full names read as one word without this
-              wordSpacing: "0.35em",
-              ...(greeting.length > 14
-                ? { fontSize: `min(2.25rem, ${(140 / greeting.length).toFixed(1)}vw)` }
-                : undefined),
+              textShadow: HALO,
+              ...(greeting.length > 17
+                ? { fontSize: `min(2.25rem, ${(190 / greeting.length).toFixed(1)}vw)` }
+                : {}),
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isOpen ? 0 : 1 }}
@@ -329,7 +329,8 @@ export default function EnvelopeEntry({
           </motion.p>
 
           <motion.p
-            className="font-script absolute inset-x-0 top-[18%] px-6 text-center text-[clamp(1rem,4.7vw,1.875rem)] text-burgundy/80"
+            className="font-script absolute inset-x-0 top-[36%] px-4 text-center text-[clamp(1rem,4.7vw,1.875rem)] text-burgundy/80"
+            style={{ textShadow: HALO }}
             initial={{ clipPath: "inset(0 100% 0 0)", opacity: 1 }}
             animate={
               isOpen
