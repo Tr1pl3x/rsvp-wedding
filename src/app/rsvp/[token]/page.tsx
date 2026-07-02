@@ -7,6 +7,9 @@ import { getSettings } from "@/lib/settings";
 // rendering in Next 16, and we need a fresh guest lookup on every visit.
 export const dynamic = "force-dynamic";
 
+// Personal tokenized links — keep them out of search indexes.
+export const metadata = { robots: { index: false, follow: false } };
+
 export default async function GuestRsvpPage({
   params,
 }: {

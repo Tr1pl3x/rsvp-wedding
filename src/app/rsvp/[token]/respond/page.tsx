@@ -7,6 +7,9 @@ import { getSettings } from "@/lib/settings";
 // straight on their confirmation (the return-visit behavior).
 export const dynamic = "force-dynamic";
 
+// Personal tokenized links — keep them out of search indexes.
+export const metadata = { robots: { index: false, follow: false } };
+
 export default async function RespondPage({
   params,
 }: {
