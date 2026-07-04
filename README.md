@@ -20,6 +20,9 @@ Requires `.env.local` with:
 | `DIRECT_URL` | Neon **dev** branch, direct string — migrations/CLI only |
 | `ADMIN_PASSWORD` | Admin dashboard login |
 | `SESSION_SECRET` | Signs the admin session cookie (32+ random bytes, base64) |
+| `PROD_DIRECT_URL` | Neon **production** branch, direct string — explicit prod migrations only |
+| `PREVIEW_ADMIN_PASSWORD` | (optional) arms the deployed smoke test's playground admin-login check |
+| `PROD_ADMIN_PASSWORD` | (optional) arms the deployed smoke test's production admin-login check |
 
 ## Deployment workflow
 
