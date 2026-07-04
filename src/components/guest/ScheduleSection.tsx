@@ -5,12 +5,11 @@ import Butterfly from "./Butterfly";
 import { FloralDivider } from "./FloralElements";
 import SectionReveal from "./SectionReveal";
 
-// Placeholder times — confirm the real run sheet with the couple
 const EVENTS = [
-  { time: "16:00", label: "Wedding Ceremony" },
-  { time: "17:00", label: "Cocktail Hour" },
-  { time: "19:00", label: "Dinner" },
-  { time: "20:00", label: "Party" },
+  { time: "16:00", label: "Welcome Drink" },
+  { time: "16:30", label: "Vow Ceremony" },
+  { time: "17:30", label: "Canapé & Photo Session" },
+  { time: "18:00", label: "Reception" },
 ];
 
 function TimelineBloom() {

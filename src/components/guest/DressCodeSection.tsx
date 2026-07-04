@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Butterfly from "./Butterfly";
+import { FloralDivider } from "./FloralElements";
 import SectionReveal from "./SectionReveal";
 
 function Flourish({ flip = false }: { flip?: boolean }) {
@@ -35,7 +36,9 @@ export default function DressCodeSection() {
       />
 
       <SectionReveal className="mx-auto flex max-w-md flex-col items-center text-center">
-        <h2 className="font-script text-5xl text-gold-light md:text-6xl">
+        {/* Separates this from the equally-burgundy Schedule section above */}
+        <FloralDivider className="h-10 w-56 text-gold-light/70" />
+        <h2 className="font-script mt-6 text-5xl text-gold-light md:text-6xl">
           Dress Code
         </h2>
 

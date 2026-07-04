@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import CtaSection from "./CtaSection";
-import DetailsSection from "./DetailsSection";
 import DressCodeSection from "./DressCodeSection";
 import EnvelopeEntry, { OPEN_TOTAL, RISE_DELAY, RISE_DUR } from "./EnvelopeEntry";
 import HeroSection from "./HeroSection";
@@ -15,6 +14,7 @@ const COLORS = {
   cream: "#fff8f3",
   burgundy: "#862042",
   burgundyDark: "#601530",
+  heroDark: "#4a1528", // bottom of the hero gradient
 };
 
 type WeddingPageProps = {
@@ -92,14 +92,12 @@ export default function WeddingPage({
         }}
       >
         <HeroSection />
-        <ScheduleSection />
-        <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.cream} />
+        <TornEdge topColor={COLORS.heroDark} bottomColor={COLORS.cream} />
         <LocationSection />
         <TornEdge topColor={COLORS.cream} bottomColor={COLORS.burgundy} />
+        <ScheduleSection />
         <DressCodeSection />
-        <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.cream} />
-        <DetailsSection />
-        <TornEdge topColor={COLORS.cream} bottomColor={COLORS.burgundyDark} />
+        <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.burgundyDark} />
         <CtaSection token={token} deadline={deadline} />
       </motion.main>
     </>
