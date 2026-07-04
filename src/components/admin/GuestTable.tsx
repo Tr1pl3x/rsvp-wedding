@@ -29,14 +29,6 @@ function StatusPill({ status }: { status: GuestStatus }) {
   );
 }
 
-function SeatBadge({ seats }: { seats: number }) {
-  return (
-    <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-500">
-      {seats} {seats === 1 ? "seat" : "seats"}
-    </span>
-  );
-}
-
 function notesText(guest: Guest): string | null {
   const text =
     guest.response?.attending === "yes"
@@ -116,19 +108,6 @@ function EditForm({ guest, onDone }: { guest: Guest; onDone: () => void }) {
           name="name"
           defaultValue={guest.name}
           required
-          className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm focus:border-burgundy focus:outline-none"
-        />
-      </div>
-      <div className="flex w-20 flex-col gap-1">
-        <label htmlFor={`edit-seats-${guest.id}`} className="text-xs text-zinc-500">
-          Seats
-        </label>
-        <input
-          id={`edit-seats-${guest.id}`}
-          name="maxGuests"
-          type="number"
-          min={1}
-          defaultValue={guest.maxGuests}
           className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm focus:border-burgundy focus:outline-none"
         />
       </div>
@@ -231,10 +210,7 @@ export default function GuestTable({
               return (
                 <tr key={guest.id} className="align-top hover:bg-zinc-50/60">
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-zinc-900">{guest.name}</p>
-                      <SeatBadge seats={guest.maxGuests} />
-                    </div>
+                    <p className="font-medium text-zinc-900">{guest.name}</p>
                     <p className="font-mono text-xs text-zinc-400">
                       {guest.token}
                     </p>
@@ -297,10 +273,7 @@ export default function GuestTable({
                 <>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-zinc-900">{guest.name}</p>
-                        <SeatBadge seats={guest.maxGuests} />
-                      </div>
+                      <p className="font-medium text-zinc-900">{guest.name}</p>
                       <p className="truncate font-mono text-xs text-zinc-400">
                         {guest.token}
                       </p>

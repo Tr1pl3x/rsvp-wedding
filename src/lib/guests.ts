@@ -9,11 +9,12 @@ export type GuestStatus = "not_sent" | "sent" | "responded";
 // The app-facing shape is unchanged from the mock era: dates are ISO STRINGS
 // (client code string-sorts and slices them) and the response is a composed
 // RsvpAnswers object. All Prisma specifics stay inside this module.
+// One guest = one invite = one seat = one meal (the couple sends every person
+// their own link), so there is deliberately no party-size/seats concept.
 export type Guest = {
   id: string;
   name: string;
   token: string;
-  maxGuests: number;
   status: GuestStatus;
   response: RsvpAnswers | null;
   respondedAt: string | null;
@@ -25,7 +26,6 @@ function toGuest(row: GuestRow): Guest {
     id: row.id,
     name: row.name,
     token: row.token,
-    maxGuests: row.maxGuests,
     status: row.status,
     response:
       row.attending === null
@@ -104,19 +104,9 @@ function randomToken(name: string): string {
   return `${slugify(name)}-${rand}`;
 }
 
-// Bounded both ends: the venue caps at 100, and an unbounded value would
-// overflow the INT4 column and throw instead of clamping.
-function clampSeats(value: number): number {
-  return Math.min(99, Math.max(1, Math.floor(Number.isFinite(value) ? value : 1)));
-}
-
-export async function createGuest(
-  name: string,
-  maxGuests = 1,
-): Promise<Guest> {
+export async function createGuest(name: string): Promise<Guest> {
   const data = {
     name: name.trim(),
-    maxGuests: clampSeats(maxGuests),
     status: "not_sent" as const,
   };
   // Token uniqueness is enforced by the DB constraint; retry on collision.
@@ -135,17 +125,13 @@ export async function createGuest(
 
 export async function updateGuest(
   id: string,
-  patch: Partial<Pick<Guest, "name" | "maxGuests" | "status">>,
+  patch: Partial<Pick<Guest, "name" | "status">>,
 ): Promise<Guest | null> {
   try {
     const row = await prisma.guest.update({
       where: { id },
       data: {
         name: patch.name !== undefined ? patch.name.trim() : undefined,
-        maxGuests:
-          patch.maxGuests !== undefined
-            ? clampSeats(patch.maxGuests)
-            : undefined,
         status: patch.status,
       },
     });

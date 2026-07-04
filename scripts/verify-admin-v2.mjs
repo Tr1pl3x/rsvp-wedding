@@ -1,4 +1,4 @@
-// Verifies admin v2: meals row + confirmed seats, seats per guest, newest-on-top,
+// Verifies admin v2: meals row, newest-on-top,
 // search/filter, invite modal + copy→mark-sent, settings save → guest deadline.
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";

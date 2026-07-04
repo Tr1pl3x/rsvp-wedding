@@ -53,26 +53,8 @@ export default function AddGuest() {
                   className={inputClass}
                 />
                 <p className="text-xs text-zinc-400">
-                  Households read naturally, e.g. &ldquo;Maya Mason &amp;
-                  family&rdquo;.
+                  Every guest gets their own personal invite link.
                 </p>
-              </div>
-
-              <div className="flex w-28 flex-col gap-1.5">
-                <label
-                  htmlFor="new-max"
-                  className="text-sm font-medium text-zinc-700"
-                >
-                  Seats
-                </label>
-                <input
-                  id="new-max"
-                  name="maxGuests"
-                  type="number"
-                  min={1}
-                  defaultValue={1}
-                  className={inputClass}
-                />
               </div>
 
               <div className="mt-2 flex justify-end gap-2">

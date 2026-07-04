@@ -3,8 +3,8 @@ import { defineConfig, env } from "prisma/config";
 
 // The Prisma 7 CLI no longer auto-loads env files, and this project keeps its
 // env in .env.local (Next.js convention).
-config({ path: ".env.local" });
-config(); // fallback: .env
+config({ path: ".env.local", quiet: true });
+config({ quiet: true }); // fallback: .env
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

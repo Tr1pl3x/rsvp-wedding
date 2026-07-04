@@ -22,7 +22,6 @@ model Guest {
   id          String      @id
   name        String
   token       String      @unique
-  maxGuests   Int
   status      GuestStatus @default(not_sent)
   // Response fields — flattened columns (queryable, CSV-safe). attending null
   // means "no response recorded"; the data layer composes RsvpAnswers from it.

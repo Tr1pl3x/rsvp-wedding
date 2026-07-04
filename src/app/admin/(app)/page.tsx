@@ -20,22 +20,21 @@ export default async function AdminDashboard() {
     (guest) => guest.response?.attending === "no",
   );
 
-  // Seat-weighted: a 2-seat guest counts as 2 confirmed seats / 2 of their dish.
-  const confirmedSeats = attending.reduce((sum, g) => sum + g.maxGuests, 0);
+  // One guest = one meal, so tallies are simple counts over attending guests.
   const mealCounts = new Map<string, number>();
   for (const guest of attending) {
     const id = guest.response?.mealId;
-    if (id) mealCounts.set(id, (mealCounts.get(id) ?? 0) + guest.maxGuests);
+    if (id) mealCounts.set(id, (mealCounts.get(id) ?? 0) + 1);
   }
   const tallies = DISHES.map((dish) => ({
     label: dish.label,
     count: mealCounts.get(dish.id) ?? 0,
   }));
-  // Defensive: surface any confirmed seats without a chosen dish so the pills
-  // always add up to the confirmed-seat total (normally zero — dish is required).
-  const chosenSeats = tallies.reduce((sum, t) => sum + t.count, 0);
-  if (confirmedSeats > chosenSeats) {
-    tallies.push({ label: "Unspecified", count: confirmedSeats - chosenSeats });
+  // Defensive: surface attending guests without a chosen dish so the pills
+  // always add up to the attending total (normally zero — dish is required).
+  const chosenMeals = tallies.reduce((sum, t) => sum + t.count, 0);
+  if (attending.length > chosenMeals) {
+    tallies.push({ label: "Unspecified", count: attending.length - chosenMeals });
   }
 
   return (
@@ -68,7 +67,7 @@ export default async function AdminDashboard() {
         pending={guests.length - responded.length}
       />
 
-      <MealsSummary tallies={tallies} confirmedSeats={confirmedSeats} />
+      <MealsSummary tallies={tallies} attendingCount={attending.length} />
 
       <GuestManager
         guests={guests}

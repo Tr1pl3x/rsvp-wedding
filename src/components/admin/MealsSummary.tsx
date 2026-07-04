@@ -1,13 +1,12 @@
 type Tally = { label: string; count: number };
 
-// Counts are seat-weighted (a 2-seat guest picking one dish = 2), so the
-// pills add up to the confirmed-seat total.
+// One guest = one meal, so the pills add up to the attending-guest total.
 export default function MealsSummary({
   tallies,
-  confirmedSeats,
+  attendingCount,
 }: {
   tallies: Tally[];
-  confirmedSeats: number;
+  attendingCount: number;
 }) {
   return (
     <section className="rounded-2xl border border-zinc-200 bg-white px-5 py-4">
@@ -16,10 +15,11 @@ export default function MealsSummary({
           Meals
         </p>
         <p className="text-xs text-zinc-500">
+          for{" "}
           <span className="font-mono tabular-nums font-semibold text-burgundy">
-            {confirmedSeats}
+            {attendingCount}
           </span>{" "}
-          confirmed {confirmedSeats === 1 ? "seat" : "seats"}
+          attending {attendingCount === 1 ? "guest" : "guests"}
         </p>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">

@@ -52,8 +52,7 @@ export async function addGuest(formData: FormData) {
   await requireAdmin();
   const name = String(formData.get("name") ?? "").trim().slice(0, 200);
   if (!name) return;
-  const maxGuests = Number(formData.get("maxGuests") ?? 1) || 1;
-  await createGuest(name, maxGuests);
+  await createGuest(name);
   revalidatePath("/admin");
 }
 
@@ -61,14 +60,13 @@ export async function editGuest(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const name = String(formData.get("name") ?? "").trim().slice(0, 200);
-  const maxGuests = Number(formData.get("maxGuests") ?? 1) || 1;
   const raw = String(formData.get("status") ?? "sent");
   const allowed: GuestStatus[] = ["not_sent", "sent", "responded"];
   const status: GuestStatus = allowed.includes(raw as GuestStatus)
     ? (raw as GuestStatus)
     : "sent";
   if (!id || !name) return;
-  await updateGuest(id, { name, maxGuests, status });
+  await updateGuest(id, { name, status });
   revalidatePath("/admin");
 }
 
