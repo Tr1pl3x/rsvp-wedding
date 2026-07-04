@@ -55,6 +55,20 @@ npx prisma migrate dev --name <change>
 DIRECT_URL=<production direct string> npx prisma migrate deploy
 ```
 
+### Post-deploy smoke test
+
+After any promote (or env-var change in Vercel), verify both deployed
+environments:
+
+```bash
+node scripts/verify-deployed.mjs
+```
+
+Checks landing/invite/not-found/admin-gate/robots/OG on the playground and
+production, asserting status codes as well as content. With
+`PREVIEW_ADMIN_PASSWORD` / `PROD_ADMIN_PASSWORD` in `.env.local` it also logs
+into each admin and verifies the dashboard renders (skipped otherwise).
+
 ### Go-live checklist
 
 1. Rotate the Neon `production` role password; update Vercel's Production
