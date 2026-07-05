@@ -63,7 +63,7 @@ export default function VenueCarousel() {
         type="button"
         onClick={prev}
         aria-label="Previous photo"
-        className="absolute left-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/85 text-burgundy-dark shadow-[0_2px_8px_rgba(51,39,29,0.3)] transition-all hover:bg-cream active:scale-90"
+        className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-cream/85 text-burgundy-dark shadow-[0_2px_8px_rgba(51,39,29,0.3)] transition-all hover:bg-cream active:scale-90"
       >
         <CaretLeft size={15} weight="bold" />
       </button>
@@ -71,7 +71,7 @@ export default function VenueCarousel() {
         type="button"
         onClick={next}
         aria-label="Next photo"
-        className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/85 text-burgundy-dark shadow-[0_2px_8px_rgba(51,39,29,0.3)] transition-all hover:bg-cream active:scale-90"
+        className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-cream/85 text-burgundy-dark shadow-[0_2px_8px_rgba(51,39,29,0.3)] transition-all hover:bg-cream active:scale-90"
       >
         <CaretRight size={15} weight="bold" />
       </button>

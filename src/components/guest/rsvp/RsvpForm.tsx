@@ -160,7 +160,7 @@ export default function RsvpForm({
                 onChange={(event) => setDietary(event.target.value)}
                 rows={3}
                 placeholder="Allergies, vegetarian, preferences…"
-                className="resize-none rounded-xl border border-cream-dark bg-cream/40 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/55 focus:border-burgundy focus:outline-none"
+                className="resize-none rounded-xl border border-cream-dark bg-cream/40 px-4 py-3 text-base text-charcoal placeholder:text-charcoal/55 focus:border-burgundy focus:outline-none"
               />
               <p className="text-xs text-charcoal/60">
                 Leave blank if none. The kitchen will accommodate where
@@ -189,7 +189,7 @@ export default function RsvpForm({
               onChange={(event) => setNote(event.target.value)}
               rows={3}
               placeholder="We'll miss you — leave a message if you'd like."
-              className="resize-none rounded-xl border border-cream-dark bg-cream/40 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/55 focus:border-burgundy focus:outline-none"
+              className="resize-none rounded-xl border border-cream-dark bg-cream/40 px-4 py-3 text-base text-charcoal placeholder:text-charcoal/55 focus:border-burgundy focus:outline-none"
             />
           </motion.div>
         )}

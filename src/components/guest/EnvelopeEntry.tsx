@@ -93,7 +93,9 @@ function WaxSeal({ isOpen }: { isOpen: boolean }) {
           fill
           preload
           sizes="144px"
-          className="object-contain"
+          // pointer-events-none: taps land on the button container, and iOS
+          // can't open its long-press "Save Image" sheet mid-tap
+          className="pointer-events-none select-none object-contain"
           // Shadow from the PNG's own alpha (not the square container) —
           // iOS Safari renders container-level drop-shadows as boxy halos
           style={{ filter: "drop-shadow(0 6px 16px rgba(75,56,42,0.38))" }}
