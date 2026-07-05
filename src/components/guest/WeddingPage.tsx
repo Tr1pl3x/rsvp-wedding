@@ -5,16 +5,18 @@ import { motion } from "framer-motion";
 import CtaSection from "./CtaSection";
 import DressCodeSection from "./DressCodeSection";
 import EnvelopeEntry, { OPEN_TOTAL, RISE_DELAY, RISE_DUR } from "./EnvelopeEntry";
+import GallerySection from "./GallerySection";
 import HeroSection from "./HeroSection";
 import LocationSection from "./LocationSection";
 import ScheduleSection from "./ScheduleSection";
 import TornEdge from "./TornEdge";
 
 const COLORS = {
-  cream: "#fff8f3",
-  burgundy: "#862042",
-  burgundyDark: "#601530",
-  heroDark: "#4a1528", // bottom of the hero gradient
+  cream: "#fbf3e7",
+  latte: "#c9ab80", // hero + closing CTA bookends
+  sand: "#ebd8bb", // schedule
+  tan: "#dfc5a4", // dress code
+  paper: "#fffdf8", // photo blocks between sections
 };
 
 type WeddingPageProps = {
@@ -91,13 +93,44 @@ export default function WeddingPage({
           ease: [0.3, 0.9, 0.3, 1],
         }}
       >
+        {/* Hero renders its own torn edge (ivory tearing over the photo) */}
         <HeroSection />
-        <TornEdge topColor={COLORS.heroDark} bottomColor={COLORS.cream} />
         <LocationSection />
-        <TornEdge topColor={COLORS.cream} bottomColor={COLORS.burgundy} />
+        {/* Full-bleed photo block — torn edges both sides, per the couple */}
+        <GallerySection
+          photo={{
+            src: "/rsvp-photos/whiteblock-1-web.jpg",
+            alt: "Harry and Susan sitting together on a harbour bench in front of the Sydney Opera House",
+            width: 1400,
+            height: 2100,
+          }}
+          edgeTop={COLORS.cream}
+          edgeBottom={COLORS.sand}
+        />
         <ScheduleSection />
+        {/* Full-bleed photo block — owns its own torn edges */}
+        <GallerySection
+          photo={{
+            src: "/rsvp-photos/whiteblock-2-4-web.jpg",
+            alt: "Three moments under the Henry Lawson pavilion — Harry and Susan leaning close, twirling, and laughing with the bouquet",
+            width: 1920,
+            height: 1281,
+          }}
+          topRule
+          bottomRule
+        />
         <DressCodeSection />
-        <TornEdge topColor={COLORS.burgundy} bottomColor={COLORS.burgundyDark} />
+        {/* Full-bleed photo block — owns its own torn edges */}
+        <GallerySection
+          photo={{
+            src: "/rsvp-photos/whiteblock-3-web.jpg",
+            alt: "Harry and Susan looking out at the Sydney Opera House beneath the Harbour Bridge",
+            width: 1400,
+            height: 1867,
+          }}
+          edgeTop={COLORS.tan}
+          edgeBottom={COLORS.latte}
+        />
         <CtaSection token={token} deadline={deadline} />
       </motion.main>
     </>
