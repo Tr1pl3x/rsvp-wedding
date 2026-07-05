@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 /**
@@ -15,22 +16,22 @@ import { motion } from "framer-motion";
 // Choreography (seconds from tap)
 export const SEAL_DUR = 0.45;
 export const FLAP_DELAY = 0.4;
-export const FLAP_DUR = 1.1;
-export const RISE_DELAY = 1.3;
+export const FLAP_DUR = 1.21;
+export const RISE_DELAY = 1.4;
 export const RISE_DUR = 1.2;
 // The envelope starts falling while the card is still finishing its rise —
 // the two opposing motions make the ending feel brisk instead of sequential
-export const DROP_DELAY = 2.1;
+export const DROP_DELAY = 2.2;
 export const DROP_DUR = 0.8;
 export const OPEN_TOTAL = DROP_DELAY + DROP_DUR;
 
-const OUTER_PAPER = "#f5dde0";
-const INNER_PAPER = "#e8c5c9";
+const OUTER_PAPER = "#efdcc1";
+const INNER_PAPER = "#dfc5a4";
 
 // Paper-coloured glow behind the entry text so it stays legible where it
 // crosses the flap's fold edges and their drop shadows.
 const HALO =
-  "0 1px 2px rgba(255,248,243,0.9), 0 0 8px rgba(245,221,224,0.95), 0 0 18px rgba(245,221,224,0.9)";
+  "0 1px 2px rgba(251,243,231,0.9), 0 0 8px rgba(239,220,193,0.95), 0 0 18px rgba(239,220,193,0.9)";
 
 // Top flap silhouette and the pocket (everything except the top triangle)
 const FLAP_CLIP = "polygon(0% 0%, 100% 0%, 50% 50%)";
@@ -48,6 +49,33 @@ function PaperGrain({ opacity }: { opacity: number }) {
   );
 }
 
+// Real-paper relief: a seamless felt-pressed tile, overlay-blended onto the
+// coloured stock. Offsetting the tile per surface keeps the flap, pocket and
+// interior from reading as one continuous sheet.
+function PaperTexture({
+  opacity,
+  offset = "0px 0px",
+  size = 290,
+}: {
+  opacity: number;
+  offset?: string;
+  size?: number;
+}) {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0"
+      style={{
+        backgroundImage: "url(/paper-texture.png)",
+        backgroundSize: `${size}px`,
+        backgroundPosition: offset,
+        mixBlendMode: "overlay",
+        opacity,
+      }}
+    />
+  );
+}
+
 function WaxSeal({ isOpen }: { isOpen: boolean }) {
   return (
     <div className="absolute left-1/2 top-1/2 z-[4] -translate-x-1/2 -translate-y-1/2">
@@ -58,47 +86,34 @@ function WaxSeal({ isOpen }: { isOpen: boolean }) {
         whileHover={isOpen ? undefined : { scale: 1.04 }}
         whileTap={isOpen ? undefined : { scale: 0.96 }}
         className="relative h-32 w-32 md:h-36 md:w-36"
-        style={{
-          borderRadius: "48% 52% 50% 50% / 52% 48% 53% 47%",
-          background:
-            "radial-gradient(circle at 35% 30%, #d4ad82, #c49a6c 55%, #a67b4e 100%)",
-          boxShadow:
-            "inset 0 2px 6px rgba(255,255,255,0.35), inset 0 -4px 10px rgba(96,21,48,0.28), 0 6px 18px rgba(96,21,48,0.22)",
-        }}
       >
-        {/* Embossed inner ring */}
-        <div
-          className="absolute inset-[14%] rounded-full"
-          style={{
-            boxShadow:
-              "inset 0 1px 2px rgba(96,21,48,0.25), 0 1px 1px rgba(255,255,255,0.3)",
-          }}
+        <Image
+          src="/rsvp-seal.png"
+          alt=""
+          fill
+          preload
+          sizes="144px"
+          className="object-contain"
+          // Shadow from the PNG's own alpha (not the square container) —
+          // iOS Safari renders container-level drop-shadows as boxy halos
+          style={{ filter: "drop-shadow(0 6px 16px rgba(75,56,42,0.38))" }}
         />
-        <span
-          className="font-script absolute inset-0 flex items-center justify-center pt-1 text-4xl text-burgundy-dark/70 md:text-5xl"
-          style={{
-            textShadow:
-              "0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(96,21,48,0.3)",
-          }}
-        >
-          H&S
-        </span>
 
-        {/* Shimmer sweep, starts after "Tap to open" has appeared */}
-        <div
-          className="absolute inset-0 overflow-hidden"
-          style={{ borderRadius: "inherit" }}
-        >
+        {/* Shimmer sweep, clipped by a circle inset inside the wax rim.
+            A border-radius clip works everywhere; the image mask this
+            replaced was ignored by iOS Safari, exposing the sweep's square
+            bounding box. Starts after "Tap to open" has appeared. */}
+        <div className="absolute inset-[8%] overflow-hidden rounded-full">
           <motion.div
             className="absolute inset-y-[-20%] w-1/3"
             style={{
               background:
-                "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,248,243,0.45) 50%, rgba(255,255,255,0) 100%)",
+                "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(251,243,231,0.45) 50%, rgba(255,255,255,0) 100%)",
             }}
             initial={{ x: "-180%" }}
             animate={{ x: "420%" }}
             transition={{
-              delay: 3.8,
+              delay: 2.6,
               duration: 1.2,
               ease: "easeInOut",
               repeat: Infinity,
@@ -142,10 +157,12 @@ export default function EnvelopeEntry({
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 38%, rgba(96,21,48,0.18), rgba(96,21,48,0) 60%)",
+              "radial-gradient(ellipse at 50% 38%, rgba(75,56,42,0.18), rgba(75,56,42,0) 60%)",
           }}
         />
-        <PaperGrain opacity={0.04} />
+        {/* interior stock reads rougher than the outer faces */}
+        <PaperTexture opacity={0.75} size={250} offset="60px 200px" />
+        <PaperGrain opacity={0.03} />
       </div>
 
       {/* Envelope body — pocket + vignette. This is the only part that
@@ -180,7 +197,7 @@ export default function EnvelopeEntry({
             paper lip. */}
         <div
           className="absolute inset-0"
-          style={{ filter: "drop-shadow(0 -2px 6px rgba(96,21,48,0.22))" }}
+          style={{ filter: "drop-shadow(0 -2px 6px rgba(75,56,42,0.22))" }}
         >
           <div
             className="absolute inset-0"
@@ -190,7 +207,7 @@ export default function EnvelopeEntry({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(255,255,255,0.3), rgba(255,255,255,0) 40%, rgba(134,32,66,0.05) 75%, rgba(96,21,48,0.10))",
+                  "linear-gradient(to top, rgba(255,255,255,0.3), rgba(255,255,255,0) 40%, rgba(116,87,63,0.05) 75%, rgba(75,56,42,0.10))",
               }}
             />
             {/* Creases where the bottom flap lies over the side flaps */}
@@ -199,7 +216,7 @@ export default function EnvelopeEntry({
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
             >
-              <g stroke="#862042" strokeOpacity="0.10">
+              <g stroke="#74573f" strokeOpacity="0.10">
                 <line
                   x1="0"
                   y1="100"
@@ -216,15 +233,22 @@ export default function EnvelopeEntry({
                 />
               </g>
             </svg>
-            <PaperGrain opacity={0.05} />
+            <PaperTexture opacity={0.55} offset="150px 80px" />
+            <PaperGrain opacity={0.03} />
           </div>
         </div>
 
         {/* Soft vignette so the envelope doesn't read as a flat fill; rides
-            along with the body when it drops */}
+            along with the body when it drops. Clipped to the pocket so it
+            shades only paper — unclipped it darkens the transparent slot,
+            which reads as a shadow gliding over the (light) page during
+            the drop. */}
         <div
           className="absolute inset-0"
-          style={{ boxShadow: "inset 0 0 140px rgba(134,32,66,0.10)" }}
+          style={{
+            clipPath: POCKET_CLIP,
+            boxShadow: "inset 0 0 140px rgba(116,87,63,0.10)",
+          }}
         />
       </motion.div>
 
@@ -252,7 +276,7 @@ export default function EnvelopeEntry({
               />
               <feColorMatrix
                 type="matrix"
-                values="0 0 0 0 0.33  0 0 0 0 0.13  0 0 0 0 0.19  0 0 0 0.6 0"
+                values="0 0 0 0 0.29  0 0 0 0 0.22  0 0 0 0 0.15  0 0 0 0.6 0"
               />
             </filter>
           </defs>
@@ -275,7 +299,7 @@ export default function EnvelopeEntry({
         >
           <div
             className="absolute inset-0"
-            style={{ filter: "drop-shadow(0 4px 8px rgba(96,21,48,0.20))" }}
+            style={{ filter: "drop-shadow(0 4px 8px rgba(75,56,42,0.20))" }}
           >
             <div
               className="absolute inset-0"
@@ -285,10 +309,11 @@ export default function EnvelopeEntry({
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%, rgba(134,32,66,0.05) 80%, rgba(96,21,48,0.10))",
+                    "linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%, rgba(116,87,63,0.05) 80%, rgba(75,56,42,0.10))",
                 }}
               />
-              <PaperGrain opacity={0.05} />
+              <PaperTexture opacity={0.55} />
+              <PaperGrain opacity={0.03} />
             </div>
           </div>
         </motion.div>
@@ -298,7 +323,7 @@ export default function EnvelopeEntry({
           className="pointer-events-none absolute left-1/2 top-1/2 z-[2] h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(96,21,48,0.10), rgba(96,21,48,0) 70%)",
+              "radial-gradient(circle, rgba(75,56,42,0.10), rgba(75,56,42,0) 70%)",
           }}
           initial={false}
           animate={{ opacity: isOpen ? 0 : 1 }}
@@ -347,11 +372,11 @@ export default function EnvelopeEntry({
           </motion.p>
 
           <motion.p
-            className="absolute inset-x-0 top-[66%] text-center text-[11px] uppercase tracking-[0.35em] text-burgundy/60"
+            className="absolute inset-x-0 top-[66%] text-center text-[11px] uppercase tracking-[0.35em] text-burgundy/75"
             initial={{ opacity: 0 }}
             animate={{ opacity: isOpen ? 0 : 1 }}
             transition={
-              isOpen ? { duration: 0.25 } : { delay: 3.0, duration: 0.8 }
+              isOpen ? { duration: 0.25 } : { delay: 1.8, duration: 0.8 }
             }
           >
             Tap to open
