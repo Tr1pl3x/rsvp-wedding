@@ -20,7 +20,7 @@ export default async function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(180deg, #4a1528, #601530)",
+          background: "linear-gradient(180deg, #38291e, #4b382a)",
         }}
       >
         <div
@@ -30,9 +30,9 @@ export default async function AppleIcon() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "radial-gradient(circle at 35% 30%, #d4ad82, #c49a6c 55%, #a67b4e 100%)",
+            background: "radial-gradient(circle at 35% 30%, #e1bb8a, #c09668 55%, #a1764a 100%)",
             borderRadius: 999,
-            color: "#601530",
+            color: "#4b382a",
             fontFamily: "Great Vibes",
             fontSize: 42,
             paddingTop: 6,

@@ -26,8 +26,8 @@ export default async function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(180deg, #4a1528 0%, #601530 50%, #4a1528 100%)",
-          color: "#fff8f3",
+          background: "linear-gradient(180deg, #38291e 0%, #4b382a 50%, #38291e 100%)",
+          color: "#fbf3e7",
         }}
       >
         {/* Thin double gold frame */}
@@ -38,7 +38,7 @@ export default async function OpengraphImage() {
             left: 28,
             right: 28,
             bottom: 28,
-            border: "2px solid rgba(196,154,108,0.6)",
+            border: "2px solid rgba(192,150,104,0.6)",
             display: "flex",
           }}
         />
@@ -49,7 +49,7 @@ export default async function OpengraphImage() {
             left: 40,
             right: 40,
             bottom: 40,
-            border: "1px solid rgba(196,154,108,0.3)",
+            border: "1px solid rgba(192,150,104,0.3)",
             display: "flex",
           }}
         />
@@ -60,7 +60,7 @@ export default async function OpengraphImage() {
             fontSize: 26,
             letterSpacing: 12,
             textTransform: "uppercase",
-            color: "#d4ad82",
+            color: "#e1bb8a",
           }}
         >
           Wedding Day
@@ -71,7 +71,7 @@ export default async function OpengraphImage() {
             fontSize: 28,
             letterSpacing: 8,
             marginTop: 18,
-            color: "rgba(255,248,243,0.85)",
+            color: "rgba(251,243,231,0.85)",
           }}
         >
           21 . 12 . 2026
@@ -87,7 +87,7 @@ export default async function OpengraphImage() {
           }}
         >
           <span>Harry</span>
-          <span style={{ fontSize: 90, color: "#d4ad82" }}>&amp;</span>
+          <span style={{ fontSize: 90, color: "#e1bb8a" }}>&amp;</span>
           <span>Susan</span>
         </div>
         <div
@@ -95,7 +95,7 @@ export default async function OpengraphImage() {
             fontFamily: "Geist",
             fontSize: 24,
             marginTop: 20,
-            color: "rgba(255,248,243,0.8)",
+            color: "rgba(251,243,231,0.8)",
           }}
         >
           {`${WEDDING.venue} · Hua Hin, Thailand`}

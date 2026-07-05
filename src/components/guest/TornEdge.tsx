@@ -33,7 +33,7 @@ export default function TornEdge({ topColor, bottomColor }: TornEdgeProps) {
         {/* Soft shadow under the tear */}
         <path
           fill="none"
-          stroke="rgba(44,16,24,0.12)"
+          stroke="rgba(51,39,29,0.12)"
           strokeWidth="3"
           d="M0 30 C28 26 44 32 64 36 C96 43 112 32 140 26 C168 19 184 33 212 39
              C240 46 256 32 284 25 C312 18 328 33 356 38 C384 44 400 29 428 23

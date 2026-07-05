@@ -1,17 +1,21 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-cream: #fff8f3;
-  --color-cream-dark: #f0e6db;
-  --color-blush: #fbe8e0;
-  --color-burgundy: #862042;
-  --color-burgundy-dark: #601530;
-  --color-burgundy-light: #a83858;
-  --color-gold: #c49a6c;
-  --color-gold-dark: #a67b4e;
-  --color-gold-light: #d4ad82;
-  --color-rose: #c85a7c;
-  --color-charcoal: #2c1018;
+  --color-cream: #fbf3e7;
+  --color-cream-dark: #eeddc8;
+  --color-blush: #f5e4cf;
+  --color-sand: #ebd8bb;
+  --color-tan: #dfc5a4;
+  --color-latte: #c9ab80;
+  --color-paper: #fffdf8;
+  --color-burgundy: #74573f;
+  --color-burgundy-dark: #4b382a;
+  --color-burgundy-light: #917155;
+  --color-gold: #c09668;
+  --color-gold-dark: #a1764a;
+  --color-gold-light: #e1bb8a;
+  --color-rose: #b58363;
+  --color-charcoal: #33271d;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -28,20 +32,20 @@ body {
 @keyframes dot-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(212, 173, 130, 0.55);
+    box-shadow: 0 0 0 0 rgba(161, 118, 74, 0.5);
   }
   50% {
-    box-shadow: 0 0 0 7px rgba(212, 173, 130, 0);
+    box-shadow: 0 0 0 7px rgba(161, 118, 74, 0);
   }
 }
 
 @keyframes btn-glow {
   0%,
   100% {
-    box-shadow: 0 0 16px rgba(196, 154, 108, 0.3);
+    box-shadow: 0 0 16px rgba(192, 150, 104, 0.3);
   }
   50% {
-    box-shadow: 0 0 32px rgba(196, 154, 108, 0.55);
+    box-shadow: 0 0 32px rgba(192, 150, 104, 0.55);
   }
 }
 

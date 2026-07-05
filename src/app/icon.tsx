@@ -14,9 +14,9 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(circle at 35% 30%, #d4ad82, #c49a6c 55%, #a67b4e 100%)",
+          background: "radial-gradient(circle at 35% 30%, #e1bb8a, #c09668 55%, #a1764a 100%)",
           borderRadius: 16,
-          color: "#601530",
+          color: "#4b382a",
           fontSize: 13,
           fontWeight: 700,
         }}
