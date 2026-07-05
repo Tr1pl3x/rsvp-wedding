@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import Butterfly from "./Butterfly";
 import SectionReveal from "./SectionReveal";
+import VenueCarousel from "./VenueCarousel";
 
 export default function LocationSection() {
   return (
@@ -38,19 +38,13 @@ export default function LocationSection() {
       </SectionReveal>
 
       <motion.div
-        className="mx-auto mt-12 max-w-lg overflow-hidden rounded-2xl shadow-[0_18px_40px_-18px_rgba(96,21,48,0.35)] ring-1 ring-gold/30"
+        className="mx-auto mt-12 max-w-lg"
         initial={{ scale: 0.92, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Image
-          src="/venue.png"
-          alt="The pool villa at InterContinental Hua Hin Resort"
-          width={784}
-          height={441}
-          className="h-auto w-full"
-        />
+        <VenueCarousel />
       </motion.div>
     </section>
   );
