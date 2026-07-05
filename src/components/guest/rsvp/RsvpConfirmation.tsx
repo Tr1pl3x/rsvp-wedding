@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, CalendarPlus, CheckCircle, MapPin } from "@phosphor-icons/react";
@@ -19,7 +20,7 @@ type RsvpConfirmationProps = {
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-6 py-3">
+    <div className="flex items-start justify-between gap-6 py-2.5">
       <dt className="shrink-0 text-charcoal/60">{label}</dt>
       <dd className="text-right font-medium text-charcoal">{value}</dd>
     </div>
@@ -42,30 +43,52 @@ export default function RsvpConfirmation({
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-lg px-5 pb-24 pt-16 text-center">
+    <div className="mx-auto w-full max-w-lg px-5 pb-6 pt-5 text-center">
       <motion.span
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.1 }}
         className="inline-flex text-gold-dark"
       >
-        <CheckCircle size={72} weight="fill" />
+        <CheckCircle size={45} weight="fill" />
       </motion.span>
 
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="font-script mt-4 text-5xl text-burgundy outline-none"
+        className="font-script mt-3 text-3xl text-burgundy outline-none"
       >
         Thank You{guestName ? `, ${guestName}` : ""}!
       </h1>
-      <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-charcoal/70">
+      <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-charcoal/70">
         {attending
           ? "We can't wait to celebrate with you in Hua Hin."
           : "We're so sorry you can't make it — you'll be dearly missed."}
       </p>
 
-      <dl className="mt-9 divide-y divide-cream-dark border-y border-cream-dark text-left text-sm">
+      {/* A keepsake print from the couple, right under the thank-you */}
+      <motion.figure
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        className="mx-auto mt-4 w-full max-w-[290px] rounded-[3px] bg-[#fffdf8] p-2.5 pb-3 shadow-[0_16px_32px_-12px_rgba(75,56,42,0.45)] ring-1 ring-charcoal/10"
+      >
+        <div className="relative aspect-[3/2] overflow-hidden">
+          <Image
+            src="/rsvp-photos/thankyou-web.jpg"
+            alt="Harry and Susan holding a Save the Date newspaper in front of Sydney Harbour"
+            fill
+            sizes="290px"
+            preload
+            className="object-cover"
+          />
+        </div>
+        <figcaption className="font-script mt-2 text-xl leading-none text-burgundy-dark">
+          {attending ? "See you in Hua Hin!" : "With love, Harry & Susan"}
+        </figcaption>
+      </motion.figure>
+
+      <dl className="mt-5 divide-y divide-cream-dark border-y border-cream-dark text-left text-sm">
         <SummaryRow label="Attending" value={attending ? "Yes" : "No"} />
         {attending && (
           <SummaryRow label="Your dish" value={dish?.name ?? "—"} />
@@ -79,7 +102,7 @@ export default function RsvpConfirmation({
       </dl>
 
       {attending && (
-        <div className="mt-8 flex flex-col gap-2.5">
+        <div className="mt-4 flex flex-col gap-2.5">
           <a
             href={VENUE_MAPS_URL}
             target="_blank"
@@ -100,9 +123,9 @@ export default function RsvpConfirmation({
         </div>
       )}
 
-      <FloralDivider className="mx-auto mt-10 h-9 w-48 text-gold/50" />
+      <FloralDivider className="mx-auto mt-5 h-8 w-44 text-gold/50" />
 
-      <p className="mx-auto mt-6 max-w-sm text-xs leading-relaxed text-charcoal/65">
+      <p className="mx-auto mt-3 max-w-sm text-xs leading-relaxed text-charcoal/65">
         Need to change your response? Please contact our wedding organizer
         Amelia at{" "}
         <a
@@ -116,7 +139,7 @@ export default function RsvpConfirmation({
 
       <Link
         href={`/rsvp/${token}`}
-        className="mt-8 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-burgundy/60 transition-colors hover:text-burgundy"
+        className="mt-4 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-burgundy/60 transition-colors hover:text-burgundy"
       >
         <ArrowLeft size={13} weight="bold" />
         Back to invitation
