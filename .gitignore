@@ -43,6 +43,12 @@ next-env.d.ts
 # screenshot output from scripts/verify-page.mjs
 scripts/shots/
 
+# photo originals stay local — only the processed web copies ship
+public/rsvp-photos/*
+!public/rsvp-photos/*-web.jpg
+public/venue/*.png
+public/rsvp-seal.jpg
+
 # local Claude Code permissions
 .claude/settings.local.json
 
