@@ -145,6 +145,9 @@ export default function RsvpForm({
                   setError(null);
                 }}
               />
+              <p className="mt-3 text-center text-[11px] leading-relaxed text-charcoal/55">
+                Photos are AI-generated to help you visualise the dishes.
+              </p>
             </div>
 
             <div className="mt-12 flex flex-col gap-2">
