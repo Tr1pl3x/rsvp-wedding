@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import RsvpExperience from "@/components/guest/rsvp/RsvpExperience";
+import { formatDeadline } from "@/lib/deadline";
 import { getGuestByToken } from "@/lib/guests";
 import { getSettings } from "@/lib/settings";
 
@@ -27,7 +28,7 @@ export default async function RespondPage({
       token={token}
       guestName={guest.name}
       initialAnswers={guest.response}
-      deadline={settings.rsvpDeadline}
+      deadline={formatDeadline(settings.rsvpDeadline)}
     />
   );
 }

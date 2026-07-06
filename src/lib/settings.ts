@@ -13,7 +13,7 @@ export type AppSettings = {
 
 const DEFAULTS: AppSettings = {
   messageTemplate: DEFAULT_MESSAGE_TEMPLATE,
-  rsvpDeadline: "15 September 2026",
+  rsvpDeadline: "2026-09-15", // canonical YYYY-MM-DD; guests see it via formatDeadline
   defaultFilter: "everyone",
   defaultSort: "newest",
 };

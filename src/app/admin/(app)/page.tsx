@@ -1,4 +1,5 @@
 import { DISHES } from "@/components/guest/rsvp/menu";
+import { formatDeadline } from "@/lib/deadline";
 import { listGuests } from "@/lib/guests";
 import { getSettings } from "@/lib/settings";
 import { WEDDING } from "@/lib/wedding";
@@ -72,7 +73,7 @@ export default async function AdminDashboard() {
       <GuestManager
         guests={guests}
         messageTemplate={settings.messageTemplate}
-        deadline={settings.rsvpDeadline}
+        deadline={formatDeadline(settings.rsvpDeadline)}
         defaultFilter={settings.defaultFilter}
         defaultSort={settings.defaultSort}
       />

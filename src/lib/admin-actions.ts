@@ -16,6 +16,7 @@ import {
   type GuestStatus,
 } from "@/lib/guests";
 import { updateSettings } from "@/lib/settings";
+import { isIsoDate } from "@/lib/deadline";
 import { isFilter, isSort } from "@/lib/guest-views";
 
 export type LoginState = { error: string } | null;
@@ -92,14 +93,15 @@ export async function saveSettings(formData: FormData) {
   const messageTemplate = String(formData.get("messageTemplate") ?? "")
     .trim()
     .slice(0, 5000);
-  const rsvpDeadline = String(formData.get("rsvpDeadline") ?? "")
-    .trim()
-    .slice(0, 200);
+  const rawDeadline = String(formData.get("rsvpDeadline") ?? "").trim();
   const rawFilter = String(formData.get("defaultFilter") ?? "everyone");
   const rawSort = String(formData.get("defaultSort") ?? "newest");
   await updateSettings({
     messageTemplate,
-    rsvpDeadline,
+    // The date input only emits YYYY-MM-DD; anything else (tampered or
+    // empty submit) keeps the previous deadline rather than storing junk
+    // that would render on guest invitations.
+    ...(isIsoDate(rawDeadline) ? { rsvpDeadline: rawDeadline } : {}),
     defaultFilter: isFilter(rawFilter) ? rawFilter : "everyone",
     defaultSort: isSort(rawSort) ? rawSort : "newest",
   });

@@ -91,7 +91,7 @@ async function main() {
   // baseline.
   const settings = {
     messageTemplate: DEFAULT_TEMPLATE,
-    rsvpDeadline: "15 September 2026",
+    rsvpDeadline: "2026-09-15",
     defaultFilter: "everyone",
     defaultSort: "newest",
   };

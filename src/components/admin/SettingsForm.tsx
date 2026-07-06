@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowCounterClockwise } from "@phosphor-icons/react";
 import { saveSettings } from "@/lib/admin-actions";
+import { formatDeadline, toDateInputValue } from "@/lib/deadline";
 import { DEFAULT_MESSAGE_TEMPLATE } from "@/lib/template";
 import type { AppSettings } from "@/lib/settings";
 import { FILTERS, SORTS } from "@/lib/guest-views";
@@ -13,6 +14,9 @@ const inputClass =
 
 export default function SettingsForm({ settings }: { settings: AppSettings }) {
   const [message, setMessage] = useState(settings.messageTemplate);
+  const [deadline, setDeadline] = useState(() =>
+    toDateInputValue(settings.rsvpDeadline),
+  );
   const [saved, setSaved] = useState(false);
 
   return (
@@ -68,15 +72,29 @@ export default function SettingsForm({ settings }: { settings: AppSettings }) {
           RSVP deadline
         </label>
         <p className="text-xs text-zinc-500">
-          Shown on the guest invitation and RSVP form.
+          Pick a date — guests see it written out on the invitation and RSVP
+          form.
         </p>
         <input
           id="rsvpDeadline"
           name="rsvpDeadline"
-          defaultValue={settings.rsvpDeadline}
-          onChange={() => setSaved(false)}
+          type="date"
+          required
+          value={deadline}
+          onChange={(event) => {
+            setDeadline(event.target.value);
+            setSaved(false);
+          }}
           className={`max-w-xs ${inputClass}`}
         />
+        {deadline && (
+          <p className="text-xs text-zinc-500">
+            Guests will see:{" "}
+            <span className="font-medium text-zinc-700">
+              {formatDeadline(deadline)}
+            </span>
+          </p>
+        )}
       </section>
 
       <section className="flex flex-col gap-3">

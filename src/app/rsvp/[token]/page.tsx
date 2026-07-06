@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import WeddingPage from "@/components/guest/WeddingPage";
+import { formatDeadline } from "@/lib/deadline";
 import { getGuestByToken } from "@/lib/guests";
 import { getSettings } from "@/lib/settings";
 
@@ -27,7 +28,7 @@ export default async function GuestRsvpPage({
     <WeddingPage
       guestName={guest.name}
       token={token}
-      deadline={settings.rsvpDeadline}
+      deadline={formatDeadline(settings.rsvpDeadline)}
     />
   );
 }
