@@ -74,7 +74,7 @@ export default async function OpengraphImage() {
             color: "rgba(251,243,231,0.85)",
           }}
         >
-          21 . 12 . 2026
+          21st Dec 2026
         </div>
         <div
           style={{

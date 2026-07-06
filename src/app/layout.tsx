@@ -18,15 +18,26 @@ const greatVibes = Great_Vibes({
   subsets: ["latin"],
 });
 
+// og:image and friends must be absolute URLs and Next 16 requires an explicit
+// metadataBase. SITE_URL wins when set (custom domain later); otherwise use
+// Vercel's own env — the stable production domain in production, the
+// deployment URL on previews — then localhost for `next dev`.
+const SITE_BASE =
+  process.env.SITE_URL ??
+  (process.env.VERCEL_ENV === "production" &&
+  process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  // Set SITE_URL in production (Vercel env var) so any config-based URLs
-  // resolve absolutely; the file-convention OG/icon images work without it.
-  metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
-  title: "Harry & Susan | 21.12.2026",
+  metadataBase: new URL(SITE_BASE),
+  title: "Harry & Susan | 21st Dec 2026",
   description:
     "You are cordially invited to the wedding of Harry & Susan at the InterContinental Hua Hin Resort, Thailand.",
   openGraph: {
-    title: "Harry & Susan | 21.12.2026",
+    title: "Harry & Susan | 21st Dec 2026",
     description:
       "You are cordially invited to the wedding of Harry & Susan at the InterContinental Hua Hin Resort, Thailand.",
     siteName: "Harry & Susan",
