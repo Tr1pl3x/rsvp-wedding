@@ -128,18 +128,6 @@ export default function RsvpConfirmation({
 
       <FloralDivider className="mx-auto mt-5 h-8 w-44 text-gold/50" />
 
-      <p className="mx-auto mt-3 max-w-sm text-xs leading-relaxed text-charcoal/65">
-        Need to change your response? Please contact our wedding organizer
-        Amelia at{" "}
-        <a
-          href="tel:+31684396988"
-          className="text-burgundy underline-offset-2 hover:underline"
-        >
-          +31 684 396 988
-        </a>
-        .
-      </p>
-
       <Link
         href={`/rsvp/${token}`}
         className="mt-4 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-burgundy/60 transition-colors hover:text-burgundy"
