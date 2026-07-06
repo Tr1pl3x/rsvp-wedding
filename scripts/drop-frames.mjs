@@ -14,7 +14,7 @@ await page.waitForTimeout(1500);
 
 const t0 = Date.now();
 await page.mouse.click(195, 422);
-for (let target = 1900; target <= 3100; target += 100) {
+for (let target = 300; target <= 3700; target += 200) {
   const wait = target - (Date.now() - t0);
   if (wait > 0) await page.waitForTimeout(wait);
   await page.screenshot({ path: `${OUT}/t${String(target).padStart(4, "0")}.png` });

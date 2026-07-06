@@ -14,15 +14,16 @@ import { motion } from "framer-motion";
  *      into view during the drop
  */
 
-// Choreography (seconds from tap)
-export const SEAL_DUR = 0.45;
-export const FLAP_DELAY = 0.4;
-export const FLAP_DUR = 1.21;
-export const RISE_DELAY = 1.4;
+// Choreography (seconds from tap). The front half is deliberately savored —
+// the melt and peel are the ceremony; the rise/drop stay brisk.
+export const SEAL_DUR = 0.75;
+export const FLAP_DELAY = 0.6;
+export const FLAP_DUR = 1.5;
+export const RISE_DELAY = 1.85;
 export const RISE_DUR = 1.2;
 // The envelope starts falling while the card is still finishing its rise —
 // the two opposing motions make the ending feel brisk instead of sequential
-export const DROP_DELAY = 2.2;
+export const DROP_DELAY = 2.65;
 export const DROP_DUR = 0.8;
 export const OPEN_TOTAL = DROP_DELAY + DROP_DUR;
 
@@ -92,8 +93,10 @@ function WaxSeal({ isOpen }: { isOpen: boolean }) {
     <div className="absolute left-1/2 top-1/2 z-[4] -translate-x-1/2 -translate-y-1/2">
       <motion.div
         initial={false}
+        // easeOut, not easeIn: the wax must react the instant the guest taps,
+        // then linger as it dissolves — easeIn reads as a dead first beat
         animate={isOpen ? { scale: 1.2, opacity: 0 } : { scale: 1, opacity: 1 }}
-        transition={{ duration: SEAL_DUR, ease: "easeIn" }}
+        transition={{ duration: SEAL_DUR, ease: "easeOut" }}
         whileHover={isOpen ? undefined : { scale: 1.04 }}
         whileTap={isOpen ? undefined : { scale: 0.96 }}
         className="relative h-32 w-32 md:h-36 md:w-36"
