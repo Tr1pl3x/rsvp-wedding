@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -77,6 +78,16 @@ function PaperTexture({
 }
 
 function WaxSeal({ isOpen }: { isOpen: boolean }) {
+  // On slow networks a partially-downloaded seal can paint before its alpha
+  // channel decodes, flashing a square around the wax. Hold it invisible
+  // until fully loaded, then stamp it in. The ref guard covers cached loads
+  // that complete before hydration (onLoad would never fire).
+  const [ready, setReady] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    if (imgRef.current?.complete) setReady(true);
+  }, []);
+
   return (
     <div className="absolute left-1/2 top-1/2 z-[4] -translate-x-1/2 -translate-y-1/2">
       <motion.div
@@ -87,41 +98,47 @@ function WaxSeal({ isOpen }: { isOpen: boolean }) {
         whileTap={isOpen ? undefined : { scale: 0.96 }}
         className="relative h-32 w-32 md:h-36 md:w-36"
       >
-        <Image
-          src="/rsvp-seal.png"
-          alt=""
-          fill
-          preload
-          sizes="144px"
-          // pointer-events-none: taps land on the button container, and iOS
-          // can't open its long-press "Save Image" sheet mid-tap
-          className="pointer-events-none select-none object-contain"
-          // Shadow from the PNG's own alpha (not the square container) —
-          // iOS Safari renders container-level drop-shadows as boxy halos
-          style={{ filter: "drop-shadow(0 6px 16px rgba(75,56,42,0.38))" }}
-        />
-
-        {/* Shimmer sweep, clipped by a circle inset inside the wax rim.
-            A border-radius clip works everywhere; the image mask this
-            replaced was ignored by iOS Safari, exposing the sweep's square
-            bounding box. Starts after "Tap to open" has appeared. */}
-        <div className="absolute inset-[8%] overflow-hidden rounded-full">
-          <motion.div
-            className="absolute inset-y-[-20%] w-1/3"
-            style={{
-              background:
-                "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(251,243,231,0.45) 50%, rgba(255,255,255,0) 100%)",
-            }}
-            initial={{ x: "-180%" }}
-            animate={{ x: "420%" }}
-            transition={{
-              delay: 2.6,
-              duration: 1.2,
-              ease: "easeInOut",
-              repeat: Infinity,
-              repeatDelay: 2.4,
-            }}
+        <div
+          className={`transition-opacity duration-500 ${ready ? "opacity-100" : "opacity-0"}`}
+        >
+          <Image
+            ref={imgRef}
+            src="/rsvp-seal.png"
+            alt=""
+            fill
+            preload
+            sizes="144px"
+            onLoad={() => setReady(true)}
+            // pointer-events-none: taps land on the button container, and iOS
+            // can't open its long-press "Save Image" sheet mid-tap
+            className="pointer-events-none select-none object-contain"
+            // Shadow from the PNG's own alpha (not the square container) —
+            // iOS Safari renders container-level drop-shadows as boxy halos
+            style={{ filter: "drop-shadow(0 6px 16px rgba(75,56,42,0.38))" }}
           />
+
+          {/* Shimmer sweep, clipped by a circle inset inside the wax rim.
+              A border-radius clip works everywhere; the image mask this
+              replaced was ignored by iOS Safari, exposing the sweep's square
+              bounding box. Starts after "Tap to open" has appeared. */}
+          <div className="absolute inset-[8%] overflow-hidden rounded-full">
+            <motion.div
+              className="absolute inset-y-[-20%] w-1/3"
+              style={{
+                background:
+                  "linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(251,243,231,0.45) 50%, rgba(255,255,255,0) 100%)",
+              }}
+              initial={{ x: "-180%" }}
+              animate={{ x: "420%" }}
+              transition={{
+                delay: 2.6,
+                duration: 1.2,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatDelay: 2.4,
+              }}
+            />
+          </div>
         </div>
       </motion.div>
     </div>

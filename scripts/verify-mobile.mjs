@@ -49,7 +49,9 @@ for (const target of TARGETS) {
     const img = [...document.querySelectorAll("img")].find((i) =>
       (i.currentSrc || i.src).includes("rsvp-seal"),
     );
-    return !!img && img.offsetHeight > 50 && img.naturalWidth > 0;
+    if (!img || img.offsetHeight < 50 || img.naturalWidth === 0) return false;
+    // the load-gate wrapper must have opened
+    return getComputedStyle(img.parentElement).opacity === "1";
   });
   record(target.name, "wax seal renders", sealVisible);
   await page.screenshot({ path: `${OUT}/1-envelope.png` });
