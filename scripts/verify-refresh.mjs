@@ -1,7 +1,12 @@
 // Proves the refresh button: dashboard open -> an RSVP arrives elsewhere ->
 // click refresh -> row updates in place (no full reload, filters preserved).
+import { config } from "dotenv";
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+
+// Dev admin password comes from gitignored .env.local — never hardcoded.
+config({ path: ".env.local" });
+const PASSWORD = process.env.ADMIN_PASSWORD;
 
 const OUT = "scripts/shots/refresh";
 mkdirSync(OUT, { recursive: true });
@@ -14,7 +19,7 @@ admin.on("pageerror", (e) => errors.push(String(e)));
 
 // open dashboard
 await admin.goto(`${base}/admin`, { waitUntil: "networkidle" });
-await admin.fill('input[name="password"]', "huahin2026");
+await admin.fill('input[name="password"]', PASSWORD);
 await admin.getByRole("button", { name: /Enter|Checking/ }).click();
 await admin.waitForURL(`${base}/admin`, { timeout: 8000 }).catch(() => {});
 await admin.waitForTimeout(900);

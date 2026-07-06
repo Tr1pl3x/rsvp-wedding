@@ -1,5 +1,10 @@
+import { config } from "dotenv";
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+
+// Dev admin password comes from gitignored .env.local — never hardcoded.
+config({ path: ".env.local" });
+const PASSWORD = process.env.ADMIN_PASSWORD;
 
 const OUT = "scripts/shots/nitpicks";
 mkdirSync(OUT, { recursive: true });
@@ -12,7 +17,7 @@ page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 page.on("pageerror", (e) => errors.push(String(e)));
 
 await page.goto(`${base}/admin`, { waitUntil: "networkidle" });
-await page.fill('input[name="password"]', "huahin2026");
+await page.fill('input[name="password"]', PASSWORD);
 await page.getByRole("button", { name: /Enter|Checking/ }).click();
 await page.waitForURL(`${base}/admin`, { timeout: 6000 }).catch(() => {});
 await page.waitForTimeout(900);

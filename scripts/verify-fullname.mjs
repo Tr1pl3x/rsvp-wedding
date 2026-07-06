@@ -1,7 +1,12 @@
 // Adds "Pyae Sone Oo" via the real admin flow, then screenshots the envelope
 // greeting, the RSVP form, and the confirmation with the full name.
+import { config } from "dotenv";
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+
+// Dev admin password comes from gitignored .env.local — never hardcoded.
+config({ path: ".env.local" });
+const PASSWORD = process.env.ADMIN_PASSWORD;
 
 const OUT = "scripts/shots/fullname";
 mkdirSync(OUT, { recursive: true });
@@ -15,7 +20,7 @@ page.on("pageerror", (e) => errors.push(String(e)));
 
 // login + add the guest
 await page.goto(`${base}/admin`, { waitUntil: "networkidle" });
-await page.fill('input[name="password"]', "huahin2026");
+await page.fill('input[name="password"]', PASSWORD);
 await page.getByRole("button", { name: /Enter|Checking/ }).click();
 await page.waitForURL(`${base}/admin`, { timeout: 8000 }).catch(() => {});
 await page.waitForTimeout(900);

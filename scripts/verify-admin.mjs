@@ -1,7 +1,12 @@
 // Verifies the admin dashboard: auth gate, login, stats/table, add guest,
 // QR endpoint, and CSV export.
+import { config } from "dotenv";
 import { chromium } from "playwright";
 import { mkdirSync } from "node:fs";
+
+// Dev admin password comes from gitignored .env.local — never hardcoded.
+config({ path: ".env.local" });
+const PASSWORD = process.env.ADMIN_PASSWORD;
 
 const OUT = "scripts/shots/admin";
 mkdirSync(OUT, { recursive: true });
@@ -26,7 +31,7 @@ await page.waitForTimeout(700);
 await page.screenshot({ path: `${OUT}/2-login-error.png` });
 
 // 3. correct password -> dashboard
-await page.fill('input[name="password"]', "huahin2026");
+await page.fill('input[name="password"]', PASSWORD);
 await page.getByRole("button", { name: /Enter|Checking/ }).click();
 await page.waitForURL(`${base}/admin`, { timeout: 6000 }).catch(() => {});
 await page.waitForTimeout(900);
