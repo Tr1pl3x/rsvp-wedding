@@ -131,7 +131,7 @@ export default function RsvpForm({
           >
             <div className="mt-12">
               <h2 className="font-script text-center text-3xl text-burgundy">
-                Choose Your Dish
+                Choose Your Main Dish
               </h2>
               <p className="mx-auto mt-2 mb-6 max-w-xs text-center text-xs leading-relaxed text-charcoal/65">
                 A plated main course, served to you on the night. Swipe through

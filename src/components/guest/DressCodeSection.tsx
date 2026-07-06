@@ -101,7 +101,7 @@ export default function DressCodeSection() {
 
         <p className="mt-8 max-w-sm text-sm leading-relaxed text-burgundy-dark/90">
           Suits and evening gowns under the Hua Hin sky. We kindly ask that
-          white be reserved for the bride.
+          white to be reserved for the bride.
         </p>
       </SectionReveal>
     </section>

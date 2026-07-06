@@ -11,7 +11,7 @@ export default function Home() {
         Wedding Day
       </p>
       <p className="mt-3 text-sm tracking-[0.25em] text-burgundy-dark">
-        21 . 12 . 2026
+        21<sup className="text-[0.65em] leading-none">st</sup> Dec 2026
       </p>
 
       <h1 className="font-script mt-8 leading-tight">

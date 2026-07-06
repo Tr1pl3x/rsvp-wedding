@@ -39,7 +39,7 @@ export default function HeroSection() {
           className="mt-3 text-sm tracking-[0.25em] text-cream/95"
           style={{ textShadow: INK_SHADOW }}
         >
-          21 . 12 . 2026
+          21<sup className="text-[0.65em] leading-none">st</sup> Dec 2026
         </p>
 
         <h1

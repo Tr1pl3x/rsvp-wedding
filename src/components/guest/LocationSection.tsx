@@ -30,6 +30,9 @@ export default function LocationSection() {
         <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em]">
           InterContinental Hua Hin Resort
         </p>
+        <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-charcoal/70">
+          La Residence
+        </p>
         <p className="mt-3 max-w-sm text-sm leading-relaxed text-charcoal/65">
           33/33 Petchkasem Road, Hua Hin,
           <br />

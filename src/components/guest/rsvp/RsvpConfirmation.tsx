@@ -62,6 +62,12 @@ export default function RsvpConfirmation({
       >
         Thank You!
       </h1>
+      {attending && (
+        <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-charcoal/70">
+          We can&apos;t wait to celebrate the beginning of our forever with
+          you.
+        </p>
+      )}
       {!attending && (
         <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-charcoal/70">
           We&apos;re so sorry you can&apos;t make it — you&apos;ll be dearly

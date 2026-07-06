@@ -401,7 +401,7 @@ export default function EnvelopeEntry({
               isOpen ? { duration: 0.25 } : { delay: 1.8, duration: 0.8 }
             }
           >
-            Tap to open
+            Tap to open invitation
           </motion.p>
         </div>
 

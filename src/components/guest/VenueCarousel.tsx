@@ -12,10 +12,6 @@ const PHOTOS = [
     alt: "The pool villa at InterContinental Hua Hin Resort",
   },
   {
-    src: "/venue/venue-2-web.jpg",
-    alt: "Private dining room dressed with orchids, overlooking the sea",
-  },
-  {
     src: "/venue/venue-3-web.jpg",
     alt: "Gardens and pool beside the resort villa",
   },
