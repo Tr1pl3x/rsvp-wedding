@@ -22,7 +22,7 @@ const ENVS = [
     base: "https://rsvp-wedding-psi.vercel.app",
     password: process.env.PROD_ADMIN_PASSWORD,
     seededGuest: false, // prod guest list is empty until go-live
-    badge: "Prod",
+    badge: null, // production header intentionally carries no env badge
   },
 ];
 
@@ -120,14 +120,18 @@ for (const env of ENVS) {
         await page.waitForURL(/\/admin$/, { timeout: 15000 });
         await page.waitForTimeout(1500);
         const text = await page.locator("body").innerText();
+        // Dev must show its amber badge; prod must NOT show any env badge.
+        const badgeOk = env.badge
+          ? text.toUpperCase().includes(env.badge.toUpperCase())
+          : !/\bPROD\b|\bDEV\b/i.test(text);
         record(
           name,
           "admin dashboard (login)",
           text.includes("Guest List") &&
             text.includes("RESPONDED") &&
-            text.toUpperCase().includes(env.badge.toUpperCase()) &&
+            badgeOk &&
             !HICCUP.test(text),
-          `badge=${env.badge}`,
+          `badge=${env.badge ?? "none expected"}`,
         );
       } catch (e) {
         record(name, "admin dashboard (login)", false, String(e).slice(0, 80));

@@ -16,7 +16,7 @@ export default async function AdminAppLayout({
   await requireAdmin();
 
   // At-a-glance guard against editing the wrong guest list: amber DEV on the
-  // playground (preview/local), burgundy PROD on the real thing.
+  // playground (preview/local); the real thing carries no badge.
   const env = getAppEnv();
   const isProd = env === "production";
 
@@ -31,16 +31,14 @@ export default async function AdminAppLayout({
             <span className="text-sm font-medium tracking-tight text-zinc-400">
               Guest Admin
             </span>
-            <span
-              title={`Environment: ${env}`}
-              className={`ml-1 self-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                isProd
-                  ? "bg-burgundy text-white"
-                  : "bg-amber-100 text-amber-700 ring-1 ring-amber-300"
-              }`}
-            >
-              {isProd ? "Prod" : "Dev"}
-            </span>
+            {!isProd && (
+              <span
+                title={`Environment: ${env}`}
+                className="ml-1 self-center rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 ring-1 ring-amber-300"
+              >
+                Dev
+              </span>
+            )}
           </Link>
           <div className="flex items-center gap-2">
             <RefreshButton />
