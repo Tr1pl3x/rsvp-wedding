@@ -1,8 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import TornEdge from "./TornEdge";
+import useImageLoaded from "./useImageLoaded";
 
 /**
  * Photo sheets between the invite sections. Without a photo an instance
@@ -36,6 +38,12 @@ export default function GallerySection({
   topRule = false,
   bottomRule = false,
 }: GallerySectionProps) {
+  // The fade waits for BOTH scroll position and the photo's pixels — on slow
+  // networks the block simply stays paper until the image can fade in whole.
+  const fadeRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(fadeRef, { once: true, margin: "-80px" });
+  const { ref: imgRef, loaded, onLoad } = useImageLoaded();
+
   if (!photo) {
     return (
       <section
@@ -48,16 +56,15 @@ export default function GallerySection({
   return (
     <section className="relative overflow-hidden bg-paper">
       {topRule && <div className="h-0.5 bg-burgundy-dark/40" />}
-      {/* Opacity only — the photo develops onto the paper as it scrolls in.
-          No scale/zoom (deliberately), and the torn edges stay static since
-          they belong to the neighbouring sections' paper. */}
       <motion.div
+        ref={fadeRef}
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
+        animate={{ opacity: inView && loaded ? 1 : 0 }}
         transition={{ duration: 1.1, ease: "easeOut" }}
       >
         <Image
+          ref={imgRef}
+          onLoad={onLoad}
           src={photo.src}
           alt={photo.alt}
           width={photo.width}

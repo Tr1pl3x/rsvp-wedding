@@ -4,6 +4,7 @@
 // Uses marco-vidal (seeded: sent, not yet responded) so kenji stays pristine.
 import { chromium, webkit, devices } from "playwright";
 import { mkdirSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 const TOKEN = "marco-vidal";
 const BASE = "http://localhost:3000";
@@ -21,6 +22,8 @@ function record(env, check, ok, detail = "") {
 }
 
 for (const target of TARGETS) {
+  // each platform submits the RSVP — reset the guest so both get a fresh form
+  execSync(`npx tsx scripts/reset-rsvp.ts ${TOKEN}`, { stdio: "ignore" });
   const OUT = `scripts/shots/mobile-${target.name}`;
   mkdirSync(OUT, { recursive: true });
   const browser = await target.engine.launch(

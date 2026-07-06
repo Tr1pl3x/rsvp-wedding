@@ -5,6 +5,7 @@ import Link from "next/link";
 import Butterfly from "./Butterfly";
 import { FloralDivider } from "./FloralElements";
 import SectionReveal from "./SectionReveal";
+import useImageLoaded from "./useImageLoaded";
 
 type CtaSectionProps = {
   token: string;
@@ -12,6 +13,8 @@ type CtaSectionProps = {
 };
 
 export default function CtaSection({ token, deadline }: CtaSectionProps) {
+  const { ref: medallionRef, loaded, onLoad } = useImageLoaded();
+
   return (
     <section className="relative overflow-hidden bg-latte px-4 py-20 text-burgundy-dark md:py-28">
       <Butterfly
@@ -49,8 +52,12 @@ export default function CtaSection({ token, deadline }: CtaSectionProps) {
       <SectionReveal delay={0.2} className="mt-16 flex flex-col items-center">
         {/* The engagement ring inside the gold ring */}
         <div className="relative h-52 w-52 overflow-hidden rounded-full ring-2 ring-burgundy/60 ring-offset-4 ring-offset-latte md:h-60 md:w-60">
-          <div className="absolute left-1/2 top-1/2 h-[150%] w-[150%] -translate-x-1/2 -translate-y-[46%]">
+          <div
+            className={`absolute left-1/2 top-1/2 h-[150%] w-[150%] -translate-x-1/2 -translate-y-[46%] transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+          >
             <Image
+              ref={medallionRef}
+              onLoad={onLoad}
               src="/rsvp-photos/last-page-web.jpg"
               alt="Harry and Susan's hands together over the harbour, her engagement ring catching the light"
               fill

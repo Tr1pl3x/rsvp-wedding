@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import useImageLoaded from "./useImageLoaded";
 
 const PHOTOS = [
   {
@@ -29,9 +30,13 @@ export default function VenueCarousel() {
   const [index, setIndex] = useState(0);
   const prev = () => setIndex((i) => (i + PHOTOS.length - 1) % PHOTOS.length);
   const next = () => setIndex((i) => (i + 1) % PHOTOS.length);
+  // First slide gates the whole frame so it never reveals an empty box
+  const { ref: firstImgRef, loaded, onLoad } = useImageLoaded();
 
   return (
-    <div className="relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-18px_rgba(75,56,42,0.35)] ring-1 ring-gold/30">
+    <div
+      className={`relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-18px_rgba(75,56,42,0.35)] ring-1 ring-gold/30 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+    >
       {/* Each slide carries its own aspect ratio — percentage heights
           chained through an aspect-ratio parent resolve to 0 in Safari */}
       <motion.div
@@ -46,9 +51,11 @@ export default function VenueCarousel() {
           else if (info.offset.x > 48) prev();
         }}
       >
-        {PHOTOS.map((photo) => (
+        {PHOTOS.map((photo, i) => (
           <div key={photo.src} className="relative aspect-[16/9] w-full shrink-0">
             <Image
+              ref={i === 0 ? firstImgRef : undefined}
+              onLoad={i === 0 ? onLoad : undefined}
               src={photo.src}
               alt={photo.alt}
               fill

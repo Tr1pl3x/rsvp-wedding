@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, CalendarPlus, CheckCircle, MapPin } from "@phosphor-icons/react";
+import useImageLoaded from "../useImageLoaded";
 import { dishById } from "./menu";
 import type { RsvpAnswers } from "./types";
 import { FloralDivider } from "../FloralElements";
@@ -35,6 +36,7 @@ export default function RsvpConfirmation({
   const attending = answers.attending === "yes";
   const dish = dishById(answers.mealId);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const { ref: photoRef, loaded, onLoad } = useImageLoaded();
 
   // Move focus to the success heading so keyboard + screen-reader users are
   // told the submission worked and the view changed (WCAG 2.4.3 / 4.1.3).
@@ -72,11 +74,13 @@ export default function RsvpConfirmation({
           overflow-hidden main absorbs any scrollbar-width excess. */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
+        animate={{ opacity: loaded ? 1 : 0 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
         className="relative left-1/2 mt-5 w-screen -translate-x-1/2"
       >
         <Image
+          ref={photoRef}
+          onLoad={onLoad}
           src="/rsvp-photos/thankyou-web.jpg"
           alt="Harry and Susan holding a Save the Date newspaper in front of Sydney Harbour"
           width={2400}
