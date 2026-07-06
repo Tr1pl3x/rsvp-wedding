@@ -58,35 +58,34 @@ export default function RsvpConfirmation({
         tabIndex={-1}
         className="font-script mt-3 text-3xl text-burgundy outline-none"
       >
-        Thank You{guestName ? `, ${guestName}` : ""}!
+        Thank You!
       </h1>
-      <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-charcoal/70">
-        {attending
-          ? "We can't wait to celebrate with you in Hua Hin."
-          : "We're so sorry you can't make it — you'll be dearly missed."}
-      </p>
+      {!attending && (
+        <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-charcoal/70">
+          We&apos;re so sorry you can&apos;t make it — you&apos;ll be dearly
+          missed.
+        </p>
+      )}
 
-      {/* A keepsake print from the couple, right under the thank-you */}
-      <motion.figure
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className="mx-auto mt-4 w-full max-w-[290px] rounded-[3px] bg-[#fffdf8] p-2.5 pb-3 shadow-[0_16px_32px_-12px_rgba(75,56,42,0.45)] ring-1 ring-charcoal/10"
+      {/* Keepsake photo, edge to edge like the invite's photo blocks. The
+          w-screen breakout escapes the padded column; the page's
+          overflow-hidden main absorbs any scrollbar-width excess. */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
+        className="relative left-1/2 mt-5 w-screen -translate-x-1/2"
       >
-        <div className="relative aspect-[3/2] overflow-hidden">
-          <Image
-            src="/rsvp-photos/thankyou-web.jpg"
-            alt="Harry and Susan holding a Save the Date newspaper in front of Sydney Harbour"
-            fill
-            sizes="290px"
-            preload
-            className="object-cover"
-          />
-        </div>
-        <figcaption className="font-script mt-2 text-xl leading-none text-burgundy-dark">
-          {attending ? "See you in Hua Hin!" : "With love, Harry & Susan"}
-        </figcaption>
-      </motion.figure>
+        <Image
+          src="/rsvp-photos/thankyou-web.jpg"
+          alt="Harry and Susan holding a Save the Date newspaper in front of Sydney Harbour"
+          width={2400}
+          height={1600}
+          sizes="100vw"
+          preload
+          className="block h-auto w-full"
+        />
+      </motion.div>
 
       <dl className="mt-5 divide-y divide-cream-dark border-y border-cream-dark text-left text-sm">
         <SummaryRow label="Attending" value={attending ? "Yes" : "No"} />
