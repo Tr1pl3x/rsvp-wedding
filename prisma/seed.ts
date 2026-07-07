@@ -84,6 +84,15 @@ async function main() {
         status: "not_sent",
         createdAt: new Date("2026-05-12T10:00:00.000Z"),
       },
+      {
+        // Public demo invitation linked from the README — keep this token
+        // stable so the link keeps working across reseeds.
+        id: "g7",
+        name: "Alex Taylor",
+        token: "demo-invite",
+        status: "sent",
+        createdAt: new Date("2026-05-15T10:00:00.000Z"),
+      },
     ],
   });
 
