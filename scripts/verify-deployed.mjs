@@ -55,14 +55,14 @@ for (const env of ENVS) {
       `HTTP ${landing.status}`,
     );
 
-    // seeded guest (playground only)
+    // seeded guest (playground only) — the durable README demo invite
     if (env.seededGuest) {
-      const guest = await get(`${base}/rsvp/test-token`);
+      const guest = await get(`${base}/rsvp/demo-invite`);
       record(
         name,
-        "seeded invite (test-token)",
+        "seeded invite (demo-invite)",
         guest.status === 200 &&
-          guest.body.includes("Hi Isabelle,") &&
+          guest.body.includes("Hi Alex Taylor,") &&
           !HICCUP.test(guest.body),
         `HTTP ${guest.status}`,
       );
