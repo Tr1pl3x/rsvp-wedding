@@ -23,12 +23,15 @@ type WeddingPageProps = {
   guestName: string;
   token: string;
   deadline: string;
+  /** True once the RSVP window has ended — the CTA goes quiet. */
+  rsvpLocked?: boolean;
 };
 
 export default function WeddingPage({
   guestName,
   token,
   deadline,
+  rsvpLocked = false,
 }: WeddingPageProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -131,7 +134,7 @@ export default function WeddingPage({
           edgeTop={COLORS.tan}
           edgeBottom={COLORS.latte}
         />
-        <CtaSection token={token} deadline={deadline} />
+        <CtaSection token={token} deadline={deadline} locked={rsvpLocked} />
       </motion.main>
     </>
   );

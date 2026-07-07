@@ -38,3 +38,21 @@ export function toDateInputValue(value: string): string {
 export function isIsoDate(value: string): boolean {
   return ISO_DATE.test(value.trim());
 }
+
+/**
+ * True once the deadline day has fully ended in the venue's timezone —
+ * "RSVP by 30 August" keeps the form open through the 30th, Bangkok time.
+ * Fails open: a non-canonical value can never lock guests out.
+ */
+export function isDeadlinePassed(value: string, now: Date = new Date()): boolean {
+  const trimmed = value.trim();
+  if (!ISO_DATE.test(trimmed)) return false;
+  // en-CA formats as YYYY-MM-DD; Asia/Bangkok is UTC+7 with no DST.
+  const todayAtVenue = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Bangkok",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+  return todayAtVenue > trimmed; // ISO date strings compare lexicographically
+}

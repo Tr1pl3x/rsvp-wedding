@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import WeddingPage from "@/components/guest/WeddingPage";
-import { formatDeadline } from "@/lib/deadline";
+import { formatDeadline, isDeadlinePassed } from "@/lib/deadline";
 import { getGuestByToken } from "@/lib/guests";
 import { getSettings } from "@/lib/settings";
 
@@ -29,6 +29,7 @@ export default async function GuestRsvpPage({
       guestName={guest.name}
       token={token}
       deadline={formatDeadline(settings.rsvpDeadline)}
+      rsvpLocked={isDeadlinePassed(settings.rsvpDeadline)}
     />
   );
 }

@@ -1,6 +1,8 @@
 "use server";
 
 import { saveResponse } from "@/lib/guests";
+import { getSettings } from "@/lib/settings";
+import { isDeadlinePassed } from "@/lib/deadline";
 import { dishById } from "@/components/guest/rsvp/menu";
 import type { RsvpAnswers } from "@/components/guest/rsvp/types";
 
@@ -52,6 +54,18 @@ export async function saveRsvp(
     return {
       ok: false,
       message: "Something wasn't right with your response. Please try again.",
+    };
+  }
+
+  // Deadline backstop. The respond page stops rendering the form once the
+  // window closes, but a form loaded before midnight (or a direct POST) must
+  // be refused here too — the page check alone is cosmetic.
+  const settings = await getSettings();
+  if (isDeadlinePassed(settings.rsvpDeadline)) {
+    return {
+      ok: false,
+      message:
+        "RSVPs have now closed. If your plans have changed, please reach out to Harry & Susan directly.",
     };
   }
 

@@ -10,9 +10,15 @@ import useImageLoaded from "./useImageLoaded";
 type CtaSectionProps = {
   token: string;
   deadline: string;
+  /** True once the RSVP window has ended — the button goes quiet. */
+  locked?: boolean;
 };
 
-export default function CtaSection({ token, deadline }: CtaSectionProps) {
+export default function CtaSection({
+  token,
+  deadline,
+  locked = false,
+}: CtaSectionProps) {
   const { ref: medallionRef, loaded, onLoad } = useImageLoaded();
 
   return (
@@ -36,17 +42,30 @@ export default function CtaSection({ token, deadline }: CtaSectionProps) {
         <h2 className="font-script text-4xl text-burgundy-dark md:text-5xl">
           Confirm Your Attendance
         </h2>
-        <p className="mt-6 max-w-sm text-sm leading-relaxed text-burgundy-dark">
-          To help us prepare for a joyful celebration, kindly confirm your
-          attendance by {deadline}.
-        </p>
-
-        <Link
-          href={`/rsvp/${token}/respond`}
-          className="animate-btn-glow mt-10 rounded-full bg-cream px-12 py-4 text-xs font-semibold uppercase tracking-[0.25em] text-burgundy-dark shadow-[0_8px_24px_-8px_rgba(75,56,42,0.45)] transition-all hover:bg-blush active:scale-[0.98]"
-        >
-          RSVP
-        </Link>
+        {locked ? (
+          <>
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-burgundy-dark">
+              Our RSVP window closed on {deadline}. If your plans change,
+              please reach out to us directly.
+            </p>
+            <span className="mt-10 rounded-full border border-burgundy-dark/30 bg-cream/40 px-12 py-4 text-xs font-semibold uppercase tracking-[0.25em] text-burgundy-dark/60">
+              RSVPs have closed
+            </span>
+          </>
+        ) : (
+          <>
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-burgundy-dark">
+              To help us prepare for a joyful celebration, kindly confirm your
+              attendance by {deadline}.
+            </p>
+            <Link
+              href={`/rsvp/${token}/respond`}
+              className="animate-btn-glow mt-10 rounded-full bg-cream px-12 py-4 text-xs font-semibold uppercase tracking-[0.25em] text-burgundy-dark shadow-[0_8px_24px_-8px_rgba(75,56,42,0.45)] transition-all hover:bg-blush active:scale-[0.98]"
+            >
+              RSVP
+            </Link>
+          </>
+        )}
       </SectionReveal>
 
       <SectionReveal delay={0.2} className="mt-16 flex flex-col items-center">
