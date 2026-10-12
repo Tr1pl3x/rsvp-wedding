@@ -1,6 +1,6 @@
 # Wedding RSVP
 
-This is a project for my friend's wedding. The project is a small RSVP service targeting around 50 people and fully vibecoded with Claude.
+This is a project for my friend's wedding. The project is a small RSVP service targeting around 50 people and buiilt with Claude Code as a pair programmer. I designed the data model and the dev/prod setup across Vercel and Neon branches, and I wrote the verification scripts to check both deployments after each release.
 
 **Stack:** Next.js 16 (App Router) · Tailwind v4 · Framer Motion · Prisma 7 · Neon Postgres · Vercel
 
